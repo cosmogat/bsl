@@ -1,0 +1,1322 @@
+// -*- c++ -*-
+// 13-09-2015
+// billy
+// nums
+// compilar amb -lgmp
+#ifndef _BSL_NUMS_
+#define _BSL_NUMS_
+#include <iostream>
+#include <vector>
+#include <bsl/cadena>
+#include <cstdlib>
+#include <climits>
+#include <ctime>
+#include <gmp.h>
+#define NUMS_LN2  0.6931471805599453094172321214581766L
+#define NUMS_LN10 2.3025850929940456840179914546843642L
+#define NUMS_FACT 3.3219280948873626
+
+namespace bsl {
+  class IntGran {
+  private:
+    mpz_t num;
+  public:
+    IntGran(int n = 0);
+    IntGran(const IntGran & obj);
+    IntGran(const char * cad);
+    IntGran(mpz_ptr z);
+    ~IntGran();
+    int prime() const;
+    IntGran nextprime() const;
+    IntGran & operator=(int n);
+    IntGran & operator=(const IntGran & obj);
+    IntGran & operator=(const char * cad);
+    IntGran & operator=(mpz_ptr z);
+    IntGran & operator+=(const IntGran & obj);
+    IntGran & operator-=(const IntGran & obj);
+    IntGran & operator*=(const IntGran & obj);
+    IntGran & operator/=(const IntGran & obj);
+    IntGran & operator%=(const IntGran & obj);
+    IntGran & operator+=(int n);
+    IntGran & operator-=(int n);
+    IntGran & operator*=(int n);
+    IntGran & operator/=(int n);
+    IntGran & operator%=(int n);
+    IntGran & operator++();
+    IntGran & operator--();
+    IntGran operator++(int);
+    IntGran operator--(int);
+    IntGran operator+(const IntGran & obj) const;
+    IntGran operator-(const IntGran & obj) const;
+    IntGran operator*(const IntGran & obj) const;
+    IntGran operator/(const IntGran & obj) const;
+    IntGran operator%(const IntGran & obj) const;
+    IntGran operator+(int n) const;
+    IntGran operator-(int n) const;
+    IntGran operator*(int n) const;
+    IntGran operator/(int n) const;
+    IntGran operator%(int n) const;
+    bool operator==(const IntGran & obj) const;
+    bool operator!=(const IntGran & obj) const;
+    bool operator<(const IntGran & obj) const;
+    bool operator<=(const IntGran & obj) const;
+    bool operator>(const IntGran & obj) const;
+    bool operator>=(const IntGran & obj) const;
+    bool operator==(int n) const;
+    bool operator!=(int n) const;
+    bool operator<(int n) const;
+    bool operator<=(int n) const;
+    bool operator>(int n) const;
+    bool operator>=(int n) const;
+    operator int() const;
+    operator float() const;
+    operator double() const;
+    friend IntGran operator+(const IntGran & obj);
+    friend IntGran operator-(const IntGran & obj);
+    friend IntGran operator+(int esq, const IntGran & dre);
+    friend IntGran operator-(int esq, const IntGran & dre);
+    friend IntGran operator*(int esq, const IntGran & dre);
+    friend IntGran operator/(int esq, const IntGran & dre);
+    friend IntGran operator%(int esq, const IntGran & dre);
+    friend bool operator==(int esq, const IntGran & dre);
+    friend bool operator!=(int esq, const IntGran & dre);
+    friend bool operator<(int esq, const IntGran & dre);
+    friend bool operator<=(int esq, const IntGran & dre);
+    friend bool operator>(int esq, const IntGran & dre);
+    friend bool operator>=(int esq, const IntGran & dre);
+    friend std::ostream & operator<<(std::ostream & eix, const IntGran & obj);
+    friend std::istream & operator>>(std::istream & ent, IntGran & obj);
+    friend void mpz_set_intgran(mpz_ptr z, IntGran & obj);
+    friend IntGran abs(const IntGran & obj);
+    friend IntGran sqrt(const IntGran & obj);
+    friend IntGran rand(const IntGran & obj);
+    friend std::vector<IntGran> rands(const IntGran & obj, unsigned int n);
+    friend IntGran pow(const IntGran & obj, unsigned int n);
+    friend IntGran mcd(const IntGran & a, const IntGran & b);
+    friend IntGran mcm(const IntGran & a, const IntGran & b);
+    friend int probab_prime(const IntGran & obj);
+    friend IntGran next_prime(const IntGran & obj);
+  };
+  IntGran operator+(const IntGran & obj);
+  IntGran operator-(const IntGran & obj);
+  IntGran operator+(int esq, const IntGran & dre);
+  IntGran operator-(int esq, const IntGran & dre);
+  IntGran operator*(int esq, const IntGran & dre);
+  IntGran operator/(int esq, const IntGran & dre);
+  IntGran operator%(int esq, const IntGran & dre);
+  bool operator==(int esq, const IntGran & dre);
+  bool operator!=(int esq, const IntGran & dre);
+  bool operator<(int esq, const IntGran & dre);
+  bool operator<=(int esq, const IntGran & dre);
+  bool operator>(int esq, const IntGran & dre);
+  bool operator>=(int esq, const IntGran & dre);
+  std::ostream & operator<<(std::ostream & eix, const IntGran & obj);
+  std::istream & operator>>(std::istream & ent, IntGran & obj);
+  void mpz_set_intgran(mpz_ptr z, IntGran & obj);
+  IntGran abs(const IntGran & obj);
+  IntGran sqrt(const IntGran & obj);
+  IntGran rand(const IntGran & obj);
+  std::vector<IntGran> rands(const IntGran & obj, unsigned int n);
+  IntGran pow(const IntGran & obj, unsigned int n);
+  IntGran mcd(const IntGran & a, const IntGran & b);
+  IntGran mcm(const IntGran & a, const IntGran & b);
+  int probab_prime(const IntGran & obj);
+  IntGran next_prime(const IntGran & obj);
+
+  class FloatGran {
+  private:
+    mpf_t num;
+  public:
+    static unsigned long int prec;
+    FloatGran(int n);
+    FloatGran(float f);
+    FloatGran(double d = 0.0);
+    FloatGran(const FloatGran & obj);
+    FloatGran(const char * cad);
+    FloatGran(mpz_ptr z);
+    FloatGran(mpf_ptr f);
+    ~FloatGran();
+    FloatGran & operator=(int n);
+    FloatGran & operator=(float f);
+    FloatGran & operator=(double d);
+    FloatGran & operator=(const FloatGran & obj);
+    FloatGran & operator=(const char * cad);
+    FloatGran & operator=(mpz_ptr z);
+    FloatGran & operator=(mpf_ptr f);
+    FloatGran & operator+=(const FloatGran & obj);
+    FloatGran & operator-=(const FloatGran & obj);
+    FloatGran & operator*=(const FloatGran & obj);
+    FloatGran & operator/=(const FloatGran & obj);
+    FloatGran & operator+=(int n);
+    FloatGran & operator-=(int n);
+    FloatGran & operator*=(int n);
+    FloatGran & operator/=(int n);
+    FloatGran & operator+=(float f);
+    FloatGran & operator-=(float f);
+    FloatGran & operator*=(float f);
+    FloatGran & operator/=(float f);
+    FloatGran & operator+=(double d);
+    FloatGran & operator-=(double d);
+    FloatGran & operator*=(double d);
+    FloatGran & operator/=(double d);
+    FloatGran operator+(const FloatGran & obj) const;
+    FloatGran operator-(const FloatGran & obj) const;
+    FloatGran operator*(const FloatGran & obj) const;
+    FloatGran operator/(const FloatGran & obj) const;   
+    FloatGran operator+(int n) const;
+    FloatGran operator-(int n) const;
+    FloatGran operator*(int n) const;
+    FloatGran operator/(int n) const;
+    FloatGran operator+(float f) const;
+    FloatGran operator-(float f) const;
+    FloatGran operator*(float f) const;
+    FloatGran operator/(float f) const;
+    FloatGran operator+(double d) const;
+    FloatGran operator-(double d) const;
+    FloatGran operator*(double d) const;
+    FloatGran operator/(double d) const;
+    bool operator==(const FloatGran & obj) const;
+    bool operator!=(const FloatGran & obj) const;
+    bool operator<(const FloatGran & obj) const;
+    bool operator<=(const FloatGran & obj) const;
+    bool operator>(const FloatGran & obj) const;
+    bool operator>=(const FloatGran & obj) const;
+    bool operator==(int n) const;
+    bool operator!=(int n) const;
+    bool operator<(int n) const;
+    bool operator<=(int n) const;
+    bool operator>(int n) const;
+    bool operator>=(int n) const;
+    bool operator==(float f) const;
+    bool operator!=(float f) const;
+    bool operator<(float f) const;
+    bool operator<=(float f) const;
+    bool operator>(float f) const;
+    bool operator>=(float f) const;
+    bool operator==(double d) const;
+    bool operator!=(double d) const;
+    bool operator<(double d) const;
+    bool operator<=(double d) const;
+    bool operator>(double d) const;
+    bool operator>=(double d) const;
+    operator int() const;
+    operator float() const;
+    operator double() const;
+    friend FloatGran operator+(const FloatGran & obj);
+    friend FloatGran operator-(const FloatGran & obj);
+    friend FloatGran operator+(int esq, const FloatGran & dre);
+    friend FloatGran operator-(int esq, const FloatGran & dre);
+    friend FloatGran operator*(int esq, const FloatGran & dre);
+    friend FloatGran operator/(int esq, const FloatGran & dre);
+    friend FloatGran operator+(float esq, const FloatGran & dre);
+    friend FloatGran operator-(float esq, const FloatGran & dre);
+    friend FloatGran operator*(float esq, const FloatGran & dre);
+    friend FloatGran operator/(float esq, const FloatGran & dre);
+    friend FloatGran operator+(double esq, const FloatGran & dre);
+    friend FloatGran operator-(double esq, const FloatGran & dre);
+    friend FloatGran operator*(double esq, const FloatGran & dre);
+    friend FloatGran operator/(double esq, const FloatGran & dre);
+    friend bool operator==(int esq, const FloatGran & dre);
+    friend bool operator!=(int esq, const FloatGran & dre);
+    friend bool operator<(int esq, const FloatGran & dre);
+    friend bool operator<=(int esq, const FloatGran & dre);
+    friend bool operator>(int esq, const FloatGran & dre);
+    friend bool operator>=(int esq, const FloatGran & dre);
+    friend bool operator==(float esq, const FloatGran & dre);
+    friend bool operator!=(float esq, const FloatGran & dre);
+    friend bool operator<(float esq, const FloatGran & dre);
+    friend bool operator<=(float esq, const FloatGran & dre);
+    friend bool operator>(float esq, const FloatGran & dre);
+    friend bool operator>=(float esq, const FloatGran & dre);
+    friend bool operator==(double esq, const FloatGran & dre);
+    friend bool operator!=(double esq, const FloatGran & dre);
+    friend bool operator<(double esq, const FloatGran & dre);
+    friend bool operator<=(double esq, const FloatGran & dre);
+    friend bool operator>(double esq, const FloatGran & dre);
+    friend bool operator>=(double esq, const FloatGran & dre);   
+    friend std::ostream & operator<<(std::ostream & eix, const FloatGran & obj);
+    friend std::istream & operator>>(std::istream & ent, FloatGran & obj);
+    friend void mpf_set_floatgran(mpf_ptr f, FloatGran & obj);
+    friend FloatGran abs(const FloatGran & obj);
+    friend FloatGran sqrt(const FloatGran & obj);
+    friend FloatGran pow(const FloatGran & obj, unsigned int n);
+    friend FloatGran pi();
+  };
+  FloatGran operator+(const FloatGran & obj);
+  FloatGran operator-(const FloatGran & obj);
+  FloatGran operator+(int esq, const FloatGran & dre);
+  FloatGran operator-(int esq, const FloatGran & dre);
+  FloatGran operator*(int esq, const FloatGran & dre);
+  FloatGran operator/(int esq, const FloatGran & dre);
+  FloatGran operator%(int esq, const FloatGran & dre);
+  FloatGran operator+(float esq, const FloatGran & dre);
+  FloatGran operator-(float esq, const FloatGran & dre);
+  FloatGran operator*(float esq, const FloatGran & dre);
+  FloatGran operator/(float esq, const FloatGran & dre);
+  FloatGran operator%(float esq, const FloatGran & dre);
+  FloatGran operator+(double esq, const FloatGran & dre);
+  FloatGran operator-(double esq, const FloatGran & dre);
+  FloatGran operator*(double esq, const FloatGran & dre);
+  FloatGran operator/(double esq, const FloatGran & dre);
+  FloatGran operator%(double esq, const FloatGran & dre);
+  bool operator==(int esq, const FloatGran & dre);
+  bool operator!=(int esq, const FloatGran & dre);
+  bool operator<(int esq, const FloatGran & dre);
+  bool operator<=(int esq, const FloatGran & dre);
+  bool operator>(int esq, const FloatGran & dre);
+  bool operator>=(int esq, const FloatGran & dre);
+  bool operator==(float esq, const FloatGran & dre);
+  bool operator!=(float esq, const FloatGran & dre);
+  bool operator<(float esq, const FloatGran & dre);
+  bool operator<=(float esq, const FloatGran & dre);
+  bool operator>(float esq, const FloatGran & dre);
+  bool operator>=(float esq, const FloatGran & dre);
+  bool operator==(double esq, const FloatGran & dre);
+  bool operator!=(double esq, const FloatGran & dre);
+  bool operator<(double esq, const FloatGran & dre);
+  bool operator<=(double esq, const FloatGran & dre);
+  bool operator>(double esq, const FloatGran & dre);
+  bool operator>=(double esq, const FloatGran & dre);  
+  std::ostream & operator<<(std::ostream & eix, const FloatGran & obj);
+  std::istream & operator>>(std::istream & ent, FloatGran & obj);
+  void mpf_set_floatgran(mpf_ptr f, FloatGran & obj);
+  FloatGran abs(const FloatGran & obj);
+  FloatGran sqrt(const FloatGran & obj);
+  FloatGran pow(const FloatGran & obj, unsigned int n);
+  FloatGran pi();
+}
+
+bsl::IntGran::IntGran(int n) {
+  operator=(n);
+}
+
+bsl::IntGran::IntGran(const IntGran & obj) {
+  operator=(obj);
+}
+
+bsl::IntGran::IntGran(const char * cad) {
+  operator=(cad);
+}
+
+bsl::IntGran::IntGran(mpz_ptr z) {
+  operator=(z);
+}
+
+bsl::IntGran::~IntGran() {
+  mpz_clear(num);
+}
+
+int bsl::IntGran::prime() const {
+  return probab_prime(*this);
+}
+
+bsl::IntGran bsl::IntGran::nextprime() const {
+  return next_prime(*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator=(int n) {
+  mpz_init(num);
+  if (n < 0) {
+    mpz_set_ui(num, -n);
+    mpz_neg(num, num);
+
+  }
+  else
+    mpz_set_ui(num, n);
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator=(const IntGran & obj) {
+  if (this != &obj) {
+    mpz_init(num);
+    mpz_set(num, obj.num);
+  }
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator=(const char * cad) {
+  mpz_init(num);
+  mpz_set_str(num, cad, 10);
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator=(mpz_ptr z) {
+  mpz_init(num);
+  mpz_set(num, z);
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator+=(const IntGran & obj) {
+  mpz_add(num, num, obj.num);
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator-=(const IntGran & obj) {
+  mpz_sub(num, num, obj.num);
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator*=(const IntGran & obj) {
+  mpz_mul(num, num, obj.num);
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator/=(const IntGran & obj) {
+  mpz_div(num, num, obj.num);
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator%=(const IntGran & obj) {
+  mpz_mod(num, num, obj.num);
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator+=(int n) {
+  if (n >= 0)
+    mpz_add_ui(num, num, n);
+  else
+    mpz_sub_ui(num, num, -n);
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator-=(int n) {
+  if (n >= 0)
+    mpz_sub_ui(num, num, n);
+  else
+    mpz_add_ui(num, num, -n);
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator*=(int n) {
+  if (n >= 0)
+    mpz_mul_ui(num, num, n);
+  else {
+    mpz_mul_ui(num, num, -n);
+    mpz_neg(num, num);
+  }
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator/=(int n) {
+  if (n >= 0)
+    mpz_div_ui(num, num, n);
+  else {
+    mpz_div_ui(num, num, -n);
+    mpz_neg(num, num);
+  }
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator%=(int n) {
+  if (n >= 0)
+    mpz_mod_ui(num, num, n);
+  else
+    mpz_mod_ui(num, num, -n);
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator++() {
+  mpz_add_ui(num, num, 1);
+  return (*this);
+}
+
+bsl::IntGran & bsl::IntGran::operator--() {
+  mpz_sub_ui(num, num, 1);
+  return (*this);
+}
+
+bsl::IntGran bsl::IntGran::operator++(int) {
+  IntGran ret(*this);
+  mpz_add_ui(num, num, 1);
+  return ret;
+}
+
+bsl::IntGran bsl::IntGran::operator--(int) {
+  IntGran ret(*this);
+  mpz_sub_ui(num, num, 1);
+  return ret;
+}
+
+bsl::IntGran bsl::IntGran::operator+(const IntGran & obj) const {
+  IntGran ret;
+  mpz_add(ret.num, num, obj.num);
+  return ret;
+}
+
+bsl::IntGran bsl::IntGran::operator-(const IntGran & obj) const {
+  IntGran ret;
+  mpz_sub(ret.num, num, obj.num);
+  return ret;
+}
+
+bsl::IntGran bsl::IntGran::operator*(const IntGran & obj) const {
+  IntGran ret;
+  mpz_mul(ret.num, num, obj.num);
+  return ret;
+}
+
+bsl::IntGran bsl::IntGran::operator/(const IntGran & obj) const {
+  IntGran ret;
+  mpz_div(ret.num, num, obj.num);
+  return ret;
+}
+
+bsl::IntGran bsl::IntGran::operator%(const IntGran & obj) const {
+  IntGran ret;
+  mpz_mod(ret.num, num, obj.num);
+  return ret;
+}
+
+bsl::IntGran bsl::IntGran::operator+(int n) const {
+  IntGran ret;
+  if (n >= 0)
+    mpz_add_ui(ret.num, num, n);
+  else
+    mpz_sub_ui(ret.num, num, -n);
+  return ret;
+}
+
+bsl::IntGran bsl::IntGran::operator-(int n) const {
+  IntGran ret;
+  if (n >= 0)
+    mpz_sub_ui(ret.num, num, n);
+  else
+    mpz_add_ui(ret.num, num, -n);
+  return ret;
+}
+
+bsl::IntGran bsl::IntGran::operator*(int n) const {
+  IntGran ret;
+  if (n >= 0)
+    mpz_mul_ui(ret.num, num, n);
+  else {
+    mpz_mul_ui(ret.num, num, -n);
+    mpz_neg(ret.num, ret.num);
+  }
+  return ret;
+}
+
+bsl::IntGran bsl::IntGran::operator/(int n) const {
+  IntGran ret;
+  if (n >= 0)
+    mpz_div_ui(ret.num, num, n);
+  else {
+    mpz_div_ui(ret.num, num, -n);
+    mpz_neg(ret.num, ret.num);
+  }
+  return ret;
+}
+
+bsl::IntGran bsl::IntGran::operator%(int n) const {
+  IntGran ret;
+  if (n >= 0)
+    mpz_mod_ui(ret.num, num, n);
+  else
+    mpz_mod_ui(ret.num, num, -n);
+  return ret;
+}
+
+bool bsl::IntGran::operator==(const IntGran & obj) const {
+  return (mpz_cmp(num, obj.num) == 0);
+}
+
+bool bsl::IntGran::operator!=(const IntGran & obj) const {
+  return (mpz_cmp(num, obj.num) != 0);
+}
+
+bool bsl::IntGran::operator<(const IntGran & obj) const {
+  return (mpz_cmp(num, obj.num) < 0);
+}
+
+bool bsl::IntGran::operator<=(const IntGran & obj) const {
+  return (mpz_cmp(num, obj.num) <= 0);
+}
+
+bool bsl::IntGran::operator>(const IntGran & obj) const {
+  return (mpz_cmp(num, obj.num) > 0);
+}
+
+bool bsl::IntGran::operator>=(const IntGran & obj) const {
+  return (mpz_cmp(num, obj.num) >= 0);
+}
+
+bool bsl::IntGran::operator==(int n) const {
+  return (mpz_cmp_si(num, n) == 0);
+}
+
+bool bsl::IntGran::operator!=(int n) const {
+  return (mpz_cmp_si(num, n) != 0);
+}
+
+bool bsl::IntGran::operator<(int n) const {
+  return (mpz_cmp_si(num, n) < 0);
+}
+
+bool bsl::IntGran::operator<=(int n) const {
+  return (mpz_cmp_si(num, n) <= 0);
+}
+
+bool bsl::IntGran::operator>(int n) const {
+  return (mpz_cmp_si(num, n) > 0);
+}
+
+bool bsl::IntGran::operator>=(int n) const {
+  return (mpz_cmp_si(num, n) >= 0);
+}
+
+bsl::IntGran::operator int() const {
+  return (int) mpz_get_si(num);
+}
+
+bsl::IntGran::operator float() const {
+  return (float) mpz_get_d(num);
+}
+
+bsl::IntGran::operator double() const {
+  return mpz_get_d(num);
+}
+
+bsl::IntGran bsl::operator+(const bsl::IntGran & obj) {
+  return IntGran(obj);
+}
+
+bsl::IntGran bsl::operator-(const bsl::IntGran & obj) {
+  IntGran ret;
+  mpz_neg(ret.num, obj.num);
+  return ret;
+}
+
+bsl::IntGran bsl::operator+(int esq, const bsl::IntGran & dre) {
+  IntGran ret(esq);
+  return (ret + dre);
+}
+
+bsl::IntGran bsl::operator-(int esq, const bsl::IntGran & dre) {
+  IntGran ret(esq);
+  return (ret - dre);
+}
+
+bsl::IntGran bsl::operator*(int esq, const bsl::IntGran & dre) {
+  IntGran ret(esq);
+  return (ret * dre);
+}
+
+bsl::IntGran bsl::operator/(int esq, const bsl::IntGran & dre) {
+  IntGran ret(esq);
+  return (ret / dre);
+}
+
+bsl::IntGran bsl::operator%(int esq, const bsl::IntGran & dre) {
+  IntGran ret(esq);
+  return (ret % dre);
+}
+
+bool bsl::operator==(int esq, const bsl::IntGran & dre) {
+  return (dre == esq);
+}
+
+bool bsl::operator!=(int esq, const bsl::IntGran & dre) {
+  return (dre != esq);
+}
+
+bool bsl::operator<(int esq, const bsl::IntGran & dre) {
+  return (dre >= esq);
+}
+
+bool bsl::operator<=(int esq, const bsl::IntGran & dre) {
+  return (dre > esq);
+}
+
+bool bsl::operator>(int esq, const bsl::IntGran & dre) {
+  return (dre <= esq);
+}
+
+bool bsl::operator>=(int esq, const bsl::IntGran & dre) {
+  return (dre < esq);
+}
+
+std::ostream & bsl::operator<<(std::ostream & eix, const bsl::IntGran & obj) {
+  char * cad;
+  int tam = (obj.num)->_mp_size * 20;
+  cad = new char[tam <= 0? 1 : tam];
+  mpz_get_str(cad, 10, obj.num); 
+  eix << cad;
+  delete [] cad;
+  return eix;
+}
+
+std::istream & bsl::operator>>(std::istream & ent, bsl::IntGran & obj) {
+  mpz_set_ui(obj.num, 0);
+  Cadena cad;
+  ent >> cad;
+  std::vector<Cadena> vec = cad.explode(".");
+  mpz_set_str(obj.num, vec[0].c_str(), 10);
+  return ent;
+}
+
+void bsl::mpz_set_intgran(mpz_ptr z, bsl::IntGran & obj) {
+  mpz_set(z, obj.num);
+}
+
+bsl::IntGran bsl::abs(const bsl::IntGran & obj) {
+  IntGran ret;
+  mpz_abs(ret.num, obj.num);
+  return ret;
+}
+
+bsl::IntGran bsl::sqrt(const bsl::IntGran & obj) {
+  IntGran ret;
+  mpz_sqrt(ret.num, obj.num);
+  return ret;
+}
+
+bsl::IntGran bsl::rand(const bsl::IntGran & obj) {
+  IntGran ret;
+  gmp_randstate_t estat;
+  gmp_randinit_default(estat);
+  gmp_randseed_ui(estat, time(NULL));
+  mpz_urandomm(ret.num, estat, obj.num);
+  gmp_randclear(estat);
+  return ret;
+}
+
+std::vector<bsl::IntGran> bsl::rands(const bsl::IntGran & obj, unsigned int n) {
+  std::vector<IntGran> ret(n);
+  gmp_randstate_t estat;
+  gmp_randinit_default(estat);
+  gmp_randseed_ui(estat, time(NULL));
+  for (unsigned int i = 0; i < ret.size(); i++)
+    mpz_urandomm(ret[i].num, estat, obj.num);
+  gmp_randclear(estat);
+  return ret;
+}
+
+bsl::IntGran bsl::pow(const bsl::IntGran & obj, unsigned int n) {
+  IntGran ret;
+  mpz_pow_ui(ret.num, obj.num, n);
+  return ret;
+}
+
+bsl::IntGran bsl::mcd(const bsl::IntGran & a, const bsl::IntGran & b) {
+  IntGran ret;
+  mpz_gcd(ret.num, a.num, b.num);
+  return ret;
+}
+
+bsl::IntGran bsl::mcm(const bsl::IntGran & a, const bsl::IntGran & b) {
+  IntGran ret;
+  mpz_lcm(ret.num, a.num, b.num);
+  return ret;
+}
+
+int bsl::probab_prime(const bsl::IntGran & obj) {
+  return mpz_probab_prime_p(obj.num, 25);
+}
+
+bsl::IntGran bsl::next_prime(const bsl::IntGran & obj) {
+  IntGran ret;
+  mpz_nextprime(ret.num, obj.num);
+  return ret;
+}
+
+bsl::FloatGran::FloatGran(int n) {
+  operator=(n);
+}
+
+bsl::FloatGran::FloatGran(float f) {
+  operator=(f);
+}
+
+bsl::FloatGran::FloatGran(double d) {
+  operator=(d);
+}
+
+bsl::FloatGran::FloatGran(const FloatGran & obj) {
+  operator=(obj);
+}
+
+bsl::FloatGran::FloatGran(const char * cad) {
+  operator=(cad);
+}
+
+bsl::FloatGran::FloatGran(mpz_ptr z) {
+  operator=(z);
+}
+
+bsl::FloatGran::FloatGran(mpf_ptr f) {
+  operator=(f);
+}
+
+bsl::FloatGran::~FloatGran() {
+  //gmp_printf("Esborrant el nombre %.*Ff\n", prec, num);
+  mpf_clear(num);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator=(int n) {
+  mpf_init2(num, (int) (prec * NUMS_FACT));
+  mpf_set_si(num, n);
+  return (*this);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator=(float f) {
+  return operator=((double) f);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator=(double d) {
+  mpf_init2(num, (int) (prec * NUMS_FACT));
+  mpf_set_d(num, d);
+  return (*this);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator=(const FloatGran & obj) {
+  mpf_init2(num, (int) (prec * NUMS_FACT));
+  mpf_set(num, obj.num);
+  return (*this);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator=(const char * cad) {
+  mpf_init2(num, (int) (prec * NUMS_FACT));
+  mpf_set_str(num, cad, 10);
+  return (*this);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator=(mpz_ptr z) {
+  mpf_init2(num, (int) (prec * NUMS_FACT));
+  mpf_set_z(num, z);
+  return (*this);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator=(mpf_ptr f) {
+  mpf_init2(num, (int) (prec * NUMS_FACT));
+  mpf_set(num, f);
+  return (*this);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator+=(const FloatGran & obj) {
+  mpf_add(num, num, obj.num);
+  return (*this);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator-=(const FloatGran & obj) {
+  mpf_sub(num, num, obj.num);
+  return (*this);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator*=(const FloatGran & obj) {
+  mpf_mul(num, num, obj.num);
+  return (*this);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator/=(const FloatGran & obj) {
+  mpf_div(num, num, obj.num);
+  return (*this);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator+=(int n) {
+  if (n >= 0)
+    mpf_add_ui(num, num, n);
+  else
+    mpf_sub_ui(num, num, -n);
+  return (*this);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator-=(int n) {
+  if (n >= 0)
+    mpf_sub_ui(num, num, n);
+  else
+    mpf_add_ui(num, num, -n);
+  return (*this);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator*=(int n) {
+  if (n >= 0)
+    mpf_mul_ui(num, num, n);
+  else {
+    mpf_mul_ui(num, num, -n);
+    mpf_neg(num, num);
+  }
+  return (*this);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator/=(int n) {
+  if (n >= 0)
+    mpf_div_ui(num, num, n);
+  else {
+    mpf_div_ui(num, num, -n);
+    mpf_neg(num, num);
+  }
+  return (*this);
+}
+
+bsl::FloatGran & bsl::FloatGran::operator+=(float f) {
+  return (operator+=(FloatGran(f)));
+}
+
+bsl::FloatGran & bsl::FloatGran::operator-=(float f) {
+
+  return (operator-=(FloatGran(f)));
+}
+
+bsl::FloatGran & bsl::FloatGran::operator*=(float f) {
+  return (operator*=(FloatGran(f)));
+}
+
+bsl::FloatGran & bsl::FloatGran::operator/=(float f) {
+  return (operator/=(FloatGran(f)));
+}
+
+bsl::FloatGran & bsl::FloatGran::operator+=(double d) {
+  return (operator+=(FloatGran(d)));
+}
+
+bsl::FloatGran & bsl::FloatGran::operator-=(double d) {
+
+  return (operator-=(FloatGran(d)));
+}
+
+bsl::FloatGran & bsl::FloatGran::operator*=(double d) {
+  return (operator*=(FloatGran(d)));
+}
+
+bsl::FloatGran & bsl::FloatGran::operator/=(double d) {
+  return (operator/=(FloatGran(d)));
+}
+
+bsl::FloatGran bsl::FloatGran::operator+(const FloatGran & obj) const {
+  FloatGran ret;
+  mpf_add(ret.num, num, obj.num);
+  return ret;
+}
+
+bsl::FloatGran bsl::FloatGran::operator-(const FloatGran & obj) const {
+  FloatGran ret;
+  mpf_sub(ret.num, num, obj.num);
+  return ret; 
+}
+
+bsl::FloatGran bsl::FloatGran::operator*(const FloatGran & obj) const {
+  FloatGran ret;
+  mpf_mul(ret.num, num, obj.num);
+  return ret; 
+}
+
+bsl::FloatGran bsl::FloatGran::operator/(const FloatGran & obj) const {
+  FloatGran ret;
+  mpf_div(ret.num, num, obj.num);
+  return ret;
+}
+
+bsl::FloatGran bsl::FloatGran::operator+(int n) const {
+  return operator+(FloatGran(n));
+}
+
+bsl::FloatGran bsl::FloatGran::operator-(int n) const {
+  return operator-(FloatGran(n));
+}
+
+bsl::FloatGran bsl::FloatGran::operator*(int n) const {
+  return operator*(FloatGran(n));
+}
+
+bsl::FloatGran bsl::FloatGran::operator/(int n) const {
+  return operator/(FloatGran(n));
+}
+
+bsl::FloatGran bsl::FloatGran::operator+(float f) const {
+  return operator+(FloatGran(f));
+}
+
+bsl::FloatGran bsl::FloatGran::operator-(float f) const {
+  return operator-(FloatGran(f));
+}
+
+bsl::FloatGran bsl::FloatGran::operator*(float f) const {
+  return operator*(FloatGran(f));
+}
+
+bsl::FloatGran bsl::FloatGran::operator/(float f) const {
+  return operator/(FloatGran(f));
+}
+
+bsl::FloatGran bsl::FloatGran::operator+(double d) const {
+  return operator+(FloatGran(d));
+}
+
+bsl::FloatGran bsl::FloatGran::operator-(double d) const {
+  return operator-(FloatGran(d));
+}
+
+bsl::FloatGran bsl::FloatGran::operator*(double d) const {
+  return operator*(FloatGran(d));
+}
+
+bsl::FloatGran bsl::FloatGran::operator/(double d) const {
+  return operator/(FloatGran(d));
+}
+
+bool bsl::FloatGran::operator==(const FloatGran & obj) const {
+  return (mpf_cmp(num, obj.num) == 0);
+}
+
+bool bsl::FloatGran::operator!=(const FloatGran & obj) const {
+  return (mpf_cmp(num, obj.num) != 0);
+}
+
+bool bsl::FloatGran::operator<(const FloatGran & obj) const {
+  return (mpf_cmp(num, obj.num) < 0);
+}
+
+bool bsl::FloatGran::operator<=(const FloatGran & obj) const {
+  return (mpf_cmp(num, obj.num) <= 0);
+}
+
+bool bsl::FloatGran::operator>(const FloatGran & obj) const {
+  return (mpf_cmp(num, obj.num) > 0);
+}
+
+bool bsl::FloatGran::operator>=(const FloatGran & obj) const {
+  return (mpf_cmp(num, obj.num) >= 0);
+}
+
+bool bsl::FloatGran::operator==(int n) const {
+  return operator==(FloatGran(n));
+}
+
+bool bsl::FloatGran::operator!=(int n) const {
+  return operator!=(FloatGran(n));
+}
+
+bool bsl::FloatGran::operator<(int n) const {
+  return operator<(FloatGran(n));
+}
+
+bool bsl::FloatGran::operator<=(int n) const {
+  return operator<=(FloatGran(n));
+}
+
+bool bsl::FloatGran::operator>(int n) const {
+  return operator>(FloatGran(n));
+}
+
+bool bsl::FloatGran::operator>=(int n) const {
+  return operator>=(FloatGran(n));
+}
+
+bool bsl::FloatGran::operator==(float f) const {
+  return operator==(FloatGran(f));
+}
+
+bool bsl::FloatGran::operator!=(float f) const {
+  return operator!=(FloatGran(f));
+}
+
+bool bsl::FloatGran::operator<(float f) const {
+  return operator<(FloatGran(f));
+}
+
+bool bsl::FloatGran::operator<=(float f) const {
+  return operator<=(FloatGran(f));
+}
+
+bool bsl::FloatGran::operator>(float f) const {
+  return operator>(FloatGran(f));
+}
+
+bool bsl::FloatGran::operator>=(float f) const {
+  return operator>=(FloatGran(f));
+}
+
+bool bsl::FloatGran::operator==(double d) const {
+  return operator==(FloatGran(d));
+}
+
+bool bsl::FloatGran::operator!=(double d) const {
+  return operator!=(FloatGran(d));
+}
+
+bool bsl::FloatGran::operator<(double d) const {
+  return operator<(FloatGran(d));
+}
+
+bool bsl::FloatGran::operator<=(double d) const {
+  return operator<=(FloatGran(d));
+}
+
+bool bsl::FloatGran::operator>(double d) const {
+  return operator>(FloatGran(d));
+}
+
+bool bsl::FloatGran::operator>=(double d) const {
+  return operator>=(FloatGran(d));
+}
+
+bsl::FloatGran::operator int() const {
+  return (int) mpf_get_si(num);
+}
+
+bsl::FloatGran::operator float() const {
+  return (float) mpf_get_d(num);
+}
+
+bsl::FloatGran::operator double() const {
+  return mpf_get_d(num);
+}
+
+bsl::FloatGran bsl::operator+(const bsl::FloatGran & obj) {
+  return FloatGran(obj);
+}
+
+bsl::FloatGran bsl::operator-(const bsl::FloatGran & obj) {
+  FloatGran ret;
+  mpf_neg(ret.num, obj.num);
+  return ret;
+}
+
+bsl::FloatGran bsl::operator+(int esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret + dre);
+}
+
+bsl::FloatGran bsl::operator-(int esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret - dre);
+}
+
+bsl::FloatGran bsl::operator*(int esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret * dre);
+}
+
+bsl::FloatGran bsl::operator/(int esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret / dre);
+}
+
+bsl::FloatGran bsl::operator+(float esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret + dre);
+}
+
+bsl::FloatGran bsl::operator-(float esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret - dre);
+}
+
+bsl::FloatGran bsl::operator*(float esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret * dre);
+}
+
+bsl::FloatGran bsl::operator/(float esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret / dre);
+}
+
+bsl::FloatGran bsl::operator+(double esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret + dre);
+}
+
+bsl::FloatGran bsl::operator-(double esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret - dre);
+}
+
+bsl::FloatGran bsl::operator*(double esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret * dre);
+}
+
+bsl::FloatGran bsl::operator/(double esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret / dre);
+}
+
+bool bsl::operator==(int esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret == dre);
+}
+
+bool bsl::operator!=(int esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret != dre);
+}
+
+bool bsl::operator<(int esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret < dre);
+}
+
+bool bsl::operator<=(int esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret <= dre);
+}
+
+bool bsl::operator>(int esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret > dre);
+}
+
+bool bsl::operator>=(int esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret >= dre);
+}
+
+bool bsl::operator==(float esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret == dre);
+}
+
+bool bsl::operator!=(float esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret != dre);
+}
+
+bool bsl::operator<(float esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret < dre);
+}
+
+bool bsl::operator<=(float esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret <= dre);
+}
+
+bool bsl::operator>(float esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret > dre);
+}
+
+bool bsl::operator>=(float esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret >= dre);
+}
+
+bool bsl::operator==(double esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret == dre);
+}
+
+bool bsl::operator!=(double esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret != dre);
+}
+
+bool bsl::operator<(double esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret < dre);
+}
+
+bool bsl::operator<=(double esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret <= dre);
+}
+
+bool bsl::operator>(double esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret > dre);
+}
+
+bool bsl::operator>=(double esq, const bsl::FloatGran & dre) {
+  FloatGran ret(esq);
+  return (ret >= dre);
+}
+
+std::ostream & bsl::operator<<(std::ostream & eix, const bsl::FloatGran & obj) {
+  mp_exp_t exp;
+  Cadena cad = mpf_get_str(NULL, &exp, 10, obj.prec, obj.num);
+  if (cad.size() == 0) {
+    eix << "0.";
+    for (unsigned int i = 1; i < obj.prec; i++)
+      eix << "0";
+  }
+  else {
+    if (cad[0] == '-') {
+      cad = cad.substr(1);
+      eix << "-";
+    }
+    if (exp > 0) {
+      if (cad.size() < exp) {
+	eix << cad;
+	for (unsigned int i = cad.size(); i < exp; i++)
+	  eix << "0";
+	eix << ".";
+      }
+      else
+	eix << cad.substr(0, exp) << "." << cad.substr(exp);
+      for (unsigned int i = cad.size(); i < obj.prec; i++)
+	eix << "0";
+    }
+    else {
+      eix << "0.";
+      for (int i = 0; i < -exp; i++)
+	eix << "0";
+      eix << cad;
+      for (unsigned int i = -exp + cad.size() + 1; i < obj.prec; i++)
+	eix << "0";
+    }
+  }
+  // gmp_printf("\n%*Ff", obj.prec, obj.num);
+  // eix << " " << exp << cad;
+  return eix;
+}
+
+std::istream & bsl::operator>>(std::istream & ent, bsl::FloatGran & obj) {
+  mpf_set_ui(obj.num, 0);
+  Cadena cad;
+  ent >> cad;
+  mpf_set_str(obj.num, cad.c_str(), 10);
+  return ent;
+}
+
+void bsl::mpf_set_floatgran(mpf_ptr f, bsl::FloatGran & obj) {
+  mpf_set(f, obj.num);
+}
+
+bsl::FloatGran bsl::abs(const bsl::FloatGran & obj) {
+  FloatGran ret;
+  mpf_abs(ret.num, obj.num);
+  return ret;
+}
+
+bsl::FloatGran bsl::sqrt(const bsl::FloatGran & obj) {
+  FloatGran ret;
+  mpf_sqrt(ret.num, obj.num);
+  return ret;
+}
+
+bsl::FloatGran bsl::pow(const bsl::FloatGran & obj, unsigned int n) {
+  FloatGran ret;
+  mpf_pow_ui(ret.num, obj.num, n);
+  return ret;
+}
+
+bsl::FloatGran bsl::pi() {
+  FloatGran A, F = 1;
+  FloatGran sum = "13591409", fact1 = 1, fact2 = 1, fact3 = 1, pi;
+  int iter = (pi.prec / 14);
+  FloatGran a = "545140134", b = "13591409", c = "640320";
+  FloatGran sis = 0, tres = 0;
+  pi = sqrt(FloatGran(10005));
+  pi *= 426880;
+  for (int i = 1; i <= iter; i++) {
+    tres += 3;
+    sis += 6;
+    A += a;
+    FloatGran B = A + b;
+    fact1 *= i;
+    fact2 *= tres * (tres - 1) * (tres - 2);
+    fact3 *= sis * (sis - 1) * (sis - 2) * (sis - 3) * (sis - 4) * (sis - 5);
+    FloatGran E = fact1 * fact1 * fact1;
+    F *= c * c * c;
+    F = -F;
+    FloatGran C = fact3 * B;
+    FloatGran D = fact2 * E * F;
+    FloatGran G = C / D;
+    sum += G;
+  }
+  pi /= sum;
+  return pi;
+}
+
+#endif

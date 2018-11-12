@@ -1,0 +1,209 @@
+// -*- c++ -*-
+// 15-01-2015
+// billy
+// map
+#ifndef _BSL_MAP_
+#define _BSL_MAP_
+#include <iostream>
+#include <vector>
+#include <bsl/arbrebb>
+#include <cstdlib>
+
+namespace bsl {
+  template <typename TBMK, typename TBMV> class Map;
+  template <typename TBMK, typename TBMV> class Map {
+  private:
+    struct _Par {
+      TBMK clau;
+      int valor;
+      _Par();
+      _Par(TBMK cl);
+      _Par(const _Par & obj);
+      _Par & operator=(const int val);
+      _Par & operator=(const _Par & obj);
+      bool operator<(const _Par obj) const;
+    };
+    ArbreBB<_Par> arb;
+    std::vector<TBMV> vec;
+    int borrats;
+  public:
+    Map();
+    Map(const Map<TBMK, TBMV> & obj);
+    Map(std::vector<TBMK> claus, std::vector<TBMV> valors);
+    int size() const;
+    bool erase(TBMK elem);
+    bool empty() const;
+    void clear();
+    TBMK min() const;
+    TBMK max() const;
+    bool search(const TBMK & x, TBMV & val) const;
+    std::vector<TBMK> key_vec() const;
+    std::vector<TBMV> value_vec() const;
+    Map<TBMK, TBMV> & operator=(const Map<TBMK, TBMV> & obj);
+    const TBMV & operator[](TBMK i) const;
+    TBMV & operator[](TBMK i);
+    template <typename TBMK1, typename TBMV1> friend std::ostream & operator<<(std::ostream & eix, const Map<TBMK1, TBMV1> & obj);
+    template <typename TBMK1, typename TBMV1> friend void print_r(const Map<TBMK1, TBMV1> & obj);
+  };
+  template <typename TBMK, typename TBMV> std::ostream & operator<<(std::ostream & eix, const Map<TBMK, TBMV> & obj);
+  template <typename TBMK, typename TBMV> void print_r(const Map<TBMK, TBMV> & obj);
+}
+
+template <typename TBMK, typename TBMV> bsl::Map<TBMK, TBMV>::_Par::_Par() {
+
+}
+
+template <typename TBMK, typename TBMV> bsl::Map<TBMK, TBMV>::_Par::_Par(TBMK cl) {
+  clau = cl;
+}
+
+template <typename TBMK, typename TBMV> bsl::Map<TBMK, TBMV>::_Par::_Par(const bsl::Map<TBMK, TBMV>::_Par & obj) {
+  operator=(obj);
+}
+
+template <typename TBMK, typename TBMV> typename bsl::Map<TBMK, TBMV>::_Par & bsl::Map<TBMK, TBMV>::_Par::operator=(const int val) {
+  valor = val;
+  return (*this);
+}
+
+template <typename TBMK, typename TBMV> typename bsl::Map<TBMK, TBMV>::_Par & bsl::Map<TBMK, TBMV>::_Par::operator=(const typename bsl::Map<TBMK, TBMV>::_Par & obj) {
+  clau = obj.clau;
+  valor = obj.valor;
+  return (*this);
+}
+
+template <typename TBMK, typename TBMV> bool bsl::Map<TBMK, TBMV>::_Par::operator<(const typename bsl::Map<TBMK, TBMV>::_Par obj) const {
+  return clau < obj.clau;
+}
+
+template <typename TBMK, typename TBMV> bsl::Map<TBMK, TBMV>::Map() {
+  borrats = 0;
+}
+
+template <typename TBMK, typename TBMV> bsl::Map<TBMK, TBMV>::Map(const bsl::Map<TBMK, TBMV> & obj) {
+  operator=(obj);
+}
+
+template <typename TBMK, typename TBMV> bsl::Map<TBMK, TBMV>::Map(std::vector<TBMK> claus, std::vector<TBMV> valors) {
+  if (claus.size() != valors.size()) {
+    std::cerr << "ERROR: Els vectors del constructor són de tamanys diferents.\n";
+    exit(-1);
+  }
+  borrats = 0;
+  for (unsigned int i = 0; i < claus.size(); i++) {
+    _Par tmp(claus[i]);
+    tmp = i;
+    arb.push(tmp);
+    vec.push_back(valors[i]);
+  }
+}
+
+template <typename TBMK, typename TBMV> int bsl::Map<TBMK, TBMV>::size() const {
+  return ((int) vec.size()) - borrats;
+}
+
+template <typename TBMK, typename TBMV> bool bsl::Map<TBMK, TBMV>::erase(TBMK elem) {
+  _Par parell(elem), tmp;
+  if (!arb.search(parell, tmp))
+    return false;
+  else {
+    borrats++;
+    arb.pop(tmp);
+    return true;
+  }
+}
+
+template <typename TBMK, typename TBMV> bool bsl::Map<TBMK, TBMV>::empty() const {
+  return (size() == 0);
+}
+
+template <typename TBMK, typename TBMV> void bsl::Map<TBMK, TBMV>::clear() {
+  borrats = 0;
+  arb.clear();
+  vec.clear();
+}
+
+template <typename TBMK, typename TBMV> TBMK bsl::Map<TBMK, TBMV>::min() const {
+  return arb.min().clau;
+}
+
+template <typename TBMK, typename TBMV> TBMK bsl::Map<TBMK, TBMV>::max() const {
+  return arb.max().clau;
+}
+
+template <typename TBMK, typename TBMV> bool bsl::Map<TBMK, TBMV>::search(const TBMK & x, TBMV & val) const {
+  _Par parell(x), tmp;
+  if (!arb.search(parell, tmp))
+    return false;
+  else {
+    val = vec[tmp.valor];
+    return true;
+  }
+}
+
+template <typename TBMK, typename TBMV> std::vector<TBMK> bsl::Map<TBMK, TBMV>::key_vec() const {
+  std::vector<TBMK> ret;
+  std::vector<_Par > arbre = arb.cpp_vec();
+  for (unsigned int i = 0; i < arbre.size(); i++)
+    ret.push_back(arbre[i].clau);
+  return ret;
+}
+
+template <typename TBMK, typename TBMV> std::vector<TBMV> bsl::Map<TBMK, TBMV>::value_vec() const {
+  std::vector<TBMV> ret;
+  std::vector<_Par> arbre = arb.cpp_vec();
+  for (unsigned int i = 0; i < arbre.size(); i++)
+    ret.push_back(vec[arbre[i].valor]);
+  return ret;
+}
+
+template <typename TBMK, typename TBMV> bsl::Map<TBMK, TBMV> & bsl::Map<TBMK, TBMV>::operator=(const bsl::Map<TBMK, TBMV> & obj) {
+  borrats = obj.borrats;
+  arb = obj.arb;
+  vec = obj.vec;
+  return (*this);
+}
+
+template <typename TBMK, typename TBMV> const TBMV & bsl::Map<TBMK, TBMV>::operator[](TBMK i) const {
+  _Par parell(i), tmp;
+  if (arb.search(parell, tmp))
+    return vec[tmp.valor]; 
+  else {
+    std::cerr << "ERROR: " << i << " no existeix com a index del Map.\n";
+    exit(-1);
+  }
+}
+
+template <typename TBMK, typename TBMV> TBMV & bsl::Map<TBMK, TBMV>::operator[](TBMK i) {
+  _Par parell(i), tmp;
+  if (arb.search(parell, tmp))
+    return vec[tmp.valor];
+  else {
+    int tam = vec.size();
+    vec.resize(tam + 1);
+    parell = tam;
+    arb.push(parell);
+    return vec[tam];
+  }
+}
+
+template <typename TBMK, typename TBMV> std::ostream & bsl::operator<<(std::ostream & eix, const bsl::Map<TBMK, TBMV> & obj) {
+  std::vector<typename bsl::Map<TBMK, TBMV>::_Par> veck = obj.arb.cpp_vec();
+  int tam = veck.size();
+  eix << "[";
+  for (int i = 0; i < tam - 1; i++) 
+    eix << veck[i].clau << " => " << obj.vec[veck[i].valor] << ", ";
+  eix << veck[tam - 1].clau << " => " << obj.vec[veck[tam - 1].valor] << "]";
+  return eix;
+}
+
+template <typename TBMK, typename TBMV> void bsl::print_r(const Map<TBMK, TBMV> & obj) {
+  std::vector<typename bsl::Map<TBMK, TBMV>::_Par> veck = obj.arb.cpp_vec();
+  int tam = veck.size();
+  std::cout << "{\n";
+  for (int i = 0; i < tam - 1; i++) 
+    std::cout << "\t" << veck[i].clau << " => " << obj.vec[veck[i].valor] << "\n";
+  std::cout << "\t" << veck[tam - 1].clau << " => " << obj.vec[veck[tam - 1].valor] << "\n}\n"; 
+}
+
+#endif

@@ -1,0 +1,299 @@
+// -*- c++ -*-
+// 02-01-2015
+// billy
+// arbre
+#ifndef _BSL_ARBREBB_
+#define _BSL_ARBREBB_
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+
+namespace bsl {
+  template <class TBABB> class ArbreBB;
+
+  template <class TBABB> class ArbreBB {
+  private:
+    struct Node {
+      TBABB elem;
+      Node * fesq, * fdre;
+      Node(TBABB dada = TBABB(), Node * fill_esq = 0, Node * fill_dre = 0) { 
+	elem = dada;
+	fesq = fill_esq;
+	fdre = fill_dre;
+      }
+    };
+    typedef Node * Link;
+    Link arrel;
+    void clear(Link p);
+    Link copy(Link p);
+    Link search(Link p, const TBABB & x) const;
+    void push(Link & p, const TBABB & x);
+    void pop(Link & p, const TBABB & x);
+    void cpp_vec(Link p, std::vector <TBABB> & vec) const;
+    void printInOrder(std::ostream & eix) const;
+    void printPreOrder(std::ostream & eix) const;
+    void printPostOrder(std::ostream & eix) const;
+    void printInOrder(Link p, std::ostream & eix) const;
+    void printPreOrder(Link p, std::ostream & eix) const;
+    void printPostOrder(Link p, std::ostream & eix) const;
+    TBABB min(Link p) const;
+    TBABB max(Link p) const;
+    int countNodes(Link p, TBABB x, TBABB y) const;
+  public:
+    ArbreBB();
+    ArbreBB(const ArbreBB<TBABB> & dre);
+    ~ArbreBB();
+    const ArbreBB<TBABB> & operator=(const ArbreBB<TBABB> & dre);
+    void clear();
+    bool empty() const;
+    bool search(const TBABB & x, TBABB & el) const;
+    void push(const TBABB & x);
+    void pop(const TBABB & x);
+    TBABB min() const;
+    TBABB max() const;
+    int countNodes(TBABB a, TBABB b) const;
+    std::vector<TBABB> cpp_vec() const;
+    void printInOrder() const;
+    void printPreOrder() const;
+    void printPostOrder() const;
+    template <class TBABB1> friend std::ostream & operator<< (std::ostream & eix, const ArbreBB<TBABB1> & a);
+  };
+
+  template <class TBABB> std::ostream & operator<< (std::ostream & eix, const ArbreBB<TBABB> & a);
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::clear(Link p) {
+  if (p->fesq != 0)
+    clear(p->fesq);
+  if (p->fdre != 0)
+    clear(p->fdre);
+  delete p;
+}
+
+template <class TBABB> typename bsl::ArbreBB<TBABB>::Link bsl::ArbreBB<TBABB>::copy(Link p) {
+  Link fill_esq = p->fesq ? copy(p->fesq) : 0;
+  Link fill_dre = p->fdre ? copy(p->fdre) : 0;
+  Link q = new Node(p->elem,fill_esq,fill_dre);
+  return (q);
+}
+
+template <class TBABB> typename bsl::ArbreBB<TBABB>::Link bsl::ArbreBB<TBABB>::search(Link p, const TBABB & x) const {
+  if (p == 0) 
+    return 0;
+  else if (x < p->elem)
+    return (search(p->fesq,x));
+  else if (p->elem < x)
+    return (search(p->fdre,x));
+  else
+    return p;
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::push(Link & p, const TBABB & x) {
+  if (p == 0)
+    p = new Node (x);
+  else if (x < p->elem)
+    push(p->fesq,x);
+  else if (p->elem < x) 
+    push(p->fdre,x);
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::pop(Link & p, const TBABB & x) {
+  if (p != 0) {
+    if (x < p->elem) 
+      pop(p->fesq,x);
+    else if (p->elem < x)
+      pop(p->fdre,x);
+    
+    else if ((p->fesq != 0) and (p->fdre != 0)) {   // Cas 3
+      Link q = p->fdre;
+      while (q->fesq)
+	q = q->fesq;
+      p->elem = q->elem;
+      pop(p->fdre, p->elem);
+    }
+    
+    else {                                          // Cas 1 i 2
+      Link q = p;
+      if (p->fesq)
+	p = p->fesq;
+      else
+	p = p->fdre;
+      delete q;
+    }
+  }
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::cpp_vec(Link p, std::vector<TBABB> & vec) const {
+  if (p) {
+    cpp_vec(p->fesq, vec);
+    vec.push_back(p->elem);
+    cpp_vec(p->fdre, vec);
+  }
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::printInOrder(std::ostream & eix) const {
+  printInOrder(arrel, eix);
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::printPreOrder(std::ostream & eix) const {
+  printPreOrder(arrel, eix);
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::printPostOrder(std::ostream & eix) const {
+  printPostOrder(arrel, eix);
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::printInOrder(Link p, std::ostream & eix) const {
+  if (p) {
+    printInOrder(p->fesq, eix);
+    eix << p->elem << " ";
+    printInOrder(p->fdre, eix);
+  }
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::printPreOrder(Link p, std::ostream & eix) const {
+  if (p) {
+    eix << p->elem << " ";
+    printPreOrder(p->fesq, eix);
+    printPreOrder(p->fdre, eix);
+  }
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::printPostOrder(Link p, std::ostream & eix) const {
+  if (p) {
+    printPostOrder(p->fesq, eix);
+    printPostOrder(p->fdre, eix);
+    eix << p->elem << " ";
+  }
+}
+
+template <class TBABB> TBABB bsl::ArbreBB<TBABB>::min(Link p) const {
+  return (!p->fesq ? p->elem : min(p->fesq));
+}
+
+template <class TBABB> TBABB bsl::ArbreBB<TBABB>::max(Link p) const {
+  return (!p->fdre ? p->elem : max(p->fdre));
+}
+
+template <class TBABB> int bsl::ArbreBB<TBABB>::countNodes(Link p, TBABB x, TBABB y) const {
+  if (!p)
+    return 0;
+  else if (p->elem < x)
+    return countNodes(p->fdre, x, y);
+  else if (y < p->elem)
+    return countNodes(p->fesq, x, y);
+  else
+    return countNodes(p->fesq, x, y) + countNodes(p->fdre, x, y) + 1;
+}
+
+template <class TBABB> bsl::ArbreBB<TBABB>::ArbreBB() { 
+  arrel = 0;
+}
+
+template <class TBABB> bsl::ArbreBB<TBABB>::ArbreBB(const bsl::ArbreBB<TBABB> & dre) {
+  arrel = 0;
+  operator=(dre); 
+}
+
+template <class TBABB> bsl::ArbreBB<TBABB>::~ArbreBB() { 
+  clear(); 
+}
+
+template <class TBABB> const bsl::ArbreBB<TBABB> & bsl::ArbreBB<TBABB>::operator=(const bsl::ArbreBB<TBABB> & dre) {
+  if (this != &dre) {
+    clear();
+    if (dre.arrel == 0)
+      arrel = 0;
+    else
+      arrel = copy(dre.arrel);
+  }
+  return (*this);
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::clear() {
+  if (arrel != 0) {
+    if (arrel->fesq != 0)
+      clear(arrel->fesq);
+    if (arrel->fdre != 0)
+      clear(arrel->fdre);
+    delete arrel;
+    arrel = 0;
+  }
+}
+
+template <class TBABB> bool bsl::ArbreBB<TBABB>::empty() const { 
+  return (arrel == 0); 
+}
+
+template <class TBABB> bool bsl::ArbreBB<TBABB>::search(const TBABB & x, TBABB & el) const {
+  Link p = search(arrel, x);
+  if (p == 0)
+    return false;
+  el = p->elem;
+  return true;
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::push(const TBABB & x) {
+  push(arrel,x);
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::pop(const TBABB & x) {
+  pop(arrel,x);
+}
+
+template <class TBABB> TBABB bsl::ArbreBB<TBABB>::min() const {
+  if (!arrel) {
+    std::cerr << "Arbre buit" << std::endl;
+    exit(-1);
+  }
+  return (min(arrel));
+}
+
+template <class TBABB> TBABB bsl::ArbreBB<TBABB>::max() const {
+  if (!arrel) {
+    std::cerr << "Arbre buit" << std::endl;
+    exit(-1);
+  }
+  return (max(arrel));
+}
+
+template <class TBABB> std::vector<TBABB> bsl::ArbreBB<TBABB>::cpp_vec() const {
+  std::vector <TBABB> ret;
+  cpp_vec(arrel, ret);
+  return ret;
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::printInOrder() const {
+  std::cout << "[";
+  printInOrder(arrel, std::cout);
+  std::cout << "]";
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::printPreOrder() const {
+  std::cout << "[";
+  printPreOrder(arrel, std::cout);
+  std::cout << "]";
+}
+
+template <class TBABB> void bsl::ArbreBB<TBABB>::printPostOrder() const {
+  std::cout << "[";
+  printPostOrder(arrel, std::cout);
+  std::cout << "]";
+}
+
+template <class TBABB> int bsl::ArbreBB<TBABB>::countNodes(TBABB a, TBABB b) const {
+  if (!arrel) {
+    std::cerr << "ERROR: Arbre buit, no es poden contar nodes!" << std::endl;
+    exit(-1);
+  }
+  return (countNodes(arrel, a, b));
+}
+
+template <class TBABB> std::ostream & bsl::operator<< (std::ostream & eix, const bsl::ArbreBB<TBABB> & a) {
+  eix << "[";
+  a.printInOrder(eix);
+  eix << "]";
+  return eix;
+}
+
+#endif

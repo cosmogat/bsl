@@ -1,0 +1,201 @@
+// -*- c++ -*-
+// 03-01-2015
+// billy
+// monticle
+#ifndef _BSL_MONTICLE_
+#define _BSL_MONTICLE_
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+
+namespace bsl {
+  template <class TBM> class Monticle;
+
+  template <class TBM> class Monticle {
+  private:
+    TBM * elems;
+    int tam, maxheap;
+    void sink(int buit);  // enfonsar
+    void hover(int buit); // flotar
+    void print(std::ostream & eix) const;
+  public:
+    Monticle(int maxelems = 100);
+    Monticle(const Monticle & der);
+    ~Monticle();
+    const Monticle & operator=(const Monticle & der);
+    void clear();
+    bool empty() const;
+    bool full() const;
+    const TBM & min() const;
+    void push(const TBM & item);
+    void pop();
+    void getVector(const std::vector<TBM> & items);
+    int size() const;
+    int search(int pos, const TBM & elem) const;
+    TBM erase(const TBM & elem);
+    bool operator>=(const Monticle<TBM> & h) const; 
+    bool operator>(const Monticle<TBM> & h) const;
+    template <class TBM1> friend std::ostream & operator<<(std::ostream & eix, const Monticle<TBM1> & h);
+  };
+
+template <class TBM> std::ostream & operator<<(std::ostream & eix, const Monticle<TBM> & h);
+}
+
+template <class TBM> void bsl::Monticle<TBM>::sink(int buit) {
+  TBM tmp = elems[buit];
+  int fill;
+  while (true) {
+    fill = buit * 2;
+    if (fill < tam  &&  elems[fill + 1] < elems[fill])
+      fill++;
+    if ((fill <= tam  &&  elems[fill] < tmp)) { 
+    	elems[buit] = elems[fill];
+    	buit = fill;
+    }
+    else{
+  	elems[buit] = tmp;
+	return;
+    }
+  }
+}
+
+template <class TBM> void bsl::Monticle<TBM>::hover(int buit) {
+  TBM tmp = elems[buit];
+  while(buit> 1 && tmp < elems[buit / 2]) {
+     elems[buit] = elems[buit / 2];
+     buit /= 2;
+  }
+  elems[buit] = tmp;
+}
+
+template <class TBM> void bsl::Monticle<TBM>::print(std::ostream & eix) const {
+  eix << "[";
+  for (int i = 1; i < tam; i++)
+    eix << elems[i] << ", ";
+  eix << elems[tam] << "]";
+}
+
+template <class TBM> bsl::Monticle<TBM>::Monticle(int maxelems) {
+  maxheap = maxelems;
+  elems = new TBM[maxheap+1];
+  tam = 0;
+}
+
+template <class TBM> bsl::Monticle<TBM>::Monticle(const bsl::Monticle<TBM> & der) {
+  elems = 0;
+  operator=(der);
+}
+
+template <class TBM> bsl::Monticle<TBM>::~Monticle() {
+  delete [] elems;
+}
+
+template <class TBM> const bsl::Monticle<TBM> & bsl::Monticle<TBM>::operator=(const bsl::Monticle<TBM> & der) {
+  if (this != &der) {
+    delete [] elems;
+    maxheap = der.maxheap;
+    elems = new TBM[maxheap];
+    tam = der.tam;
+    for (int i = 1; i <= tam; i++)
+      elems[i] = der.elems[i];
+  }
+  return *this ;
+}
+
+template <class TBM> void bsl::Monticle<TBM>::clear() {
+  tam = 0;
+}
+
+template <class TBM> bool bsl::Monticle<TBM>::empty() const {
+  return (tam == 0);
+}
+
+template <class TBM> bool bsl::Monticle<TBM>::full() const {
+  return (tam == maxheap);
+}
+
+template <class TBM> const TBM & bsl::Monticle<TBM>::min() const {
+  if (tam == 0) {
+    std::cerr << "ERROR: Monticle buit" << std::endl;
+    exit(-1);
+  }
+  return elems[1];
+}
+
+template <class TBM> void bsl::Monticle<TBM>::push(const TBM & item) {
+  if (tam == maxheap) {
+    std::cerr << "ERROR: Monticle ple" << std::endl;
+    exit(-1);
+  }
+  elems[++tam] = item;
+  hover(tam);
+}
+
+template <class TBM> void bsl::Monticle<TBM>::pop() {
+  if (tam == 0) {
+    std::cerr << "ERROR: Monticle buit" << std::endl;
+    exit(-1);
+  }
+  elems[1] = elems[tam];
+  tam--;
+  sink(1);
+}
+
+template <class TBM> void bsl::Monticle<TBM>::getVector(const std::vector<TBM> & items) {
+  if ((unsigned int) maxheap < items.size()) {
+    std::cerr << "ERROR: Tamany de vector molt gran per a formar el Monticle" << std::endl; 
+    exit(-1);
+  }
+  tam = (int) items.size();
+  for (int i = 1 ; i <= tam ; i++)
+    elems[i] = items[i - 1];
+  for (int i = (tam / 2) ; i > 0 ; i--)
+    sink(i);
+}
+
+template <class TBM> int bsl::Monticle<TBM>::size() const {
+  return tam;
+}
+
+template <class TBM> int bsl::Monticle<TBM>::search(int pos, const TBM & elem) const {
+  if (tam < pos)
+    return -1;
+  else if (elem <= elems[pos])
+    return pos;
+  else {
+    int tmp1 = search(pos * 2, elem);
+    int tmp2 = search(pos * 2 + 1, elem);
+    if ((tmp1 != -1) && (tmp2 != -1))
+      return (elems[tmp1] <= elems[tmp2] ? tmp1 : tmp2);
+    else 
+      return (tmp1 == -1 ? tmp2 : tmp1);
+  }
+}
+
+template <class TBM> TBM bsl::Monticle<TBM>::erase(const TBM & elem) {
+  int aux = search(1, elem);
+  if (aux == -1)
+    return TBM();
+  else {
+    TBM tmp = elems[aux];
+    elems[aux] = elems[tam];
+    tam--;
+    sink(aux);
+    return tmp;
+  }
+}
+
+template <class TBM> bool bsl::Monticle<TBM>::operator>=(const bsl::Monticle<TBM> & h) const {
+  return (tam >= h.tam);
+}
+ 
+template <class TBM> bool bsl::Monticle<TBM>::operator>(const bsl::Monticle<TBM> & h) const {
+  return (tam > h.tam);
+}
+
+template <class TBM> std::ostream & bsl::operator<<(std::ostream & eix, const bsl::Monticle <TBM> & h) {
+  h.print(eix);
+  return eix;
+}
+
+#endif

@@ -1,0 +1,682 @@
+// -*-c++-*-
+// 15-12-2014
+// billy
+// complex
+// compilar amb -lm
+#ifndef _BSL_COMPLEX_
+#define _BSL_COMPLEX_
+#include <iostream>
+#include <cmath>
+#include <cstdlib>
+
+#undef C_LN2
+#undef C_LN10
+#undef C_PI
+#define C_LN2  0.6931471805599453094172321214581766L
+#define C_LN10 2.3025850929940456840179914546843642L
+#define C_PI   3.1415926535897932384626433832795029L
+
+namespace bsl {
+  template <class TBC> class Complex;
+
+  template <class TBC> class Complex {
+  private:
+    TBC re, im;
+    void Print(std::ostream & eix) const;
+    void Scan(std::istream & ent);
+  public:
+    Complex(TBC r = TBC(0), TBC i = TBC(0));
+    Complex(const Complex <TBC> & z);
+    void real(TBC r);
+    void imag(TBC i);
+    Complex<TBC> & operator=(const TBC & val);
+    Complex<TBC> & operator=(const Complex <TBC> & z);
+    Complex<TBC> & operator+=(const TBC & val);
+    Complex<TBC> & operator+=(const Complex <TBC> & z);
+    Complex<TBC> & operator-=(const TBC & val);
+    Complex<TBC> & operator-=(const Complex <TBC> & z);
+    Complex<TBC> & operator*=(const TBC & val);
+    Complex<TBC> & operator*=(const Complex <TBC> & z);
+    Complex<TBC> & operator/=(const TBC & val);
+    Complex<TBC> & operator/=(const Complex <TBC> & z);
+    Complex<TBC> operator+(const TBC & val) const;
+    Complex<TBC> operator+(const Complex <TBC> & z) const;
+    Complex<TBC> operator-(const TBC & val) const;
+    Complex<TBC> operator-(const Complex <TBC> & z) const;
+    Complex<TBC> operator*(const TBC & val) const;
+    Complex<TBC> operator*(const Complex <TBC> & z) const;
+    Complex<TBC> operator/(const TBC & val) const;
+    Complex<TBC> operator/(const Complex <TBC> & z) const;
+    bool operator==(const TBC & val) const;
+    bool operator==(const Complex <TBC> & z) const;
+    bool operator!=(const TBC & val) const;
+    bool operator!=(const Complex <TBC> & z) const;
+    bool operator<(const Complex <TBC> & z) const;
+    bool operator<=(const Complex <TBC> & z) const;
+    bool operator>(const Complex <TBC> & z) const;
+    bool operator>=(const Complex <TBC> & z) const;
+    operator int() const;
+    operator float() const;
+    operator double() const;
+    operator long double() const;
+    template <class TBC1> friend Complex<TBC1> operator+(const TBC1 val, const Complex <TBC1> z);
+    template <class TBC1> friend Complex<TBC1> operator-(const TBC1 val, const Complex <TBC1> z);
+    template <class TBC1> friend Complex<TBC1> operator*(const TBC1 val, const Complex <TBC1> z);
+    template <class TBC1> friend Complex<TBC1> operator/(const TBC1 val, const Complex <TBC1> z);
+    template <class TBC1> friend bool operator==(const TBC1 & val, const Complex <TBC1> & z);
+    template <class TBC1> friend bool operator!=(const TBC1 & val, const Complex <TBC1> & z);
+    template <class TBC1> friend Complex<TBC1> operator+(const Complex <TBC1> & z);
+    template <class TBC1> friend Complex<TBC1> operator-(const Complex <TBC1> & z);
+    template <class TBC1> friend std::istream & operator>>(std::istream & ent, Complex <TBC1> & z);
+    template <class TBC1> friend std::ostream & operator<<(std::ostream & eix, const Complex <TBC1> & z);
+    template <class TBC1> friend bool isinf(Complex <TBC1> z);
+    template <class TBC1> friend bool isnan(Complex <TBC1> z);
+    template <class TBC1> friend TBC1 real(Complex <TBC1> z);
+    template <class TBC1> friend TBC1 imag(Complex <TBC1> z);
+    template <class TBC1> friend TBC1 abs(Complex <TBC1> z);
+    template <class TBC1> friend TBC1 arg(Complex <TBC1> z);
+    template <class TBC1> friend TBC1 norm(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> conj(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> polar(TBC1 rho, TBC1 theta);
+    template <class TBC1> friend Complex <TBC1> proj(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> sqrt(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> sin(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> cos(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> tan(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> sinh(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> cosh(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> tanh(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> asin(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> acos(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> atan(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> asinh(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> acosh(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> atanh(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> exp(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> pow(Complex <TBC1> z0, Complex <TBC1> z1);
+    template <class TBC1> friend Complex <TBC1> pow(Complex <TBC1> z0, TBC1 n);
+    template <class TBC1> friend Complex <TBC1> pow(TBC1 n, Complex <TBC1> z1);
+    template <class TBC1> friend Complex <TBC1> log(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> log(Complex <TBC1> z, int k);
+    template <class TBC1> friend Complex <TBC1> logi(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> logi(Complex <TBC1> z, int k);
+    template <class TBC1> friend Complex <TBC1> log10(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> log10(Complex <TBC1> z, int k);
+    template <class TBC1> friend Complex <TBC1> log2(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> log2(Complex <TBC1> z, int k);
+    template <class TBC1> friend Complex <TBC1> tgamma(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> lgamma(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> tbeta(Complex <TBC1> z0, Complex <TBC1> z1);
+    template <class TBC1> friend Complex <TBC1> lbeta(Complex <TBC1> z0, Complex <TBC1> z1);
+    template <class TBC1> friend Complex <TBC1> tpi(Complex <TBC1> z);
+    template <class TBC1> friend Complex <TBC1> lpi(Complex <TBC1> z);
+  };
+
+  template <class TBC> Complex<TBC> operator+(const TBC val, const Complex <TBC> z);
+  template <class TBC> Complex<TBC> operator-(const TBC val, const Complex <TBC> z);
+  template <class TBC> Complex<TBC> operator*(const TBC val, const Complex <TBC> z);
+  template <class TBC> Complex<TBC> operator/(const TBC val, const Complex <TBC> z);
+  template <class TBC> bool operator==(const TBC & val, const Complex <TBC> & z);
+  template <class TBC> bool operator!=(const TBC & val, const Complex <TBC> & z);
+  template <class TBC> Complex<TBC> operator+(const Complex <TBC> & z);
+  template <class TBC> Complex<TBC> operator-(const Complex <TBC> & z);
+  template <class TBC> std::istream & operator>>(std::istream & ent, Complex <TBC> & z);
+  template <class TBC> std::ostream & operator<<(std::ostream & eix, const Complex <TBC> & z);
+  template <class TBC> bool isinf(Complex <TBC> z);
+  template <class TBC> bool isnan(Complex <TBC> z);
+  template <class TBC> TBC real(Complex <TBC> z);
+  template <class TBC> TBC imag(Complex <TBC> z);
+  template <class TBC> TBC abs(Complex <TBC> z);
+  template <class TBC> TBC arg(Complex <TBC> z);
+  template <class TBC> TBC norm(Complex <TBC> z);
+  template <class TBC> Complex <TBC> conj(Complex <TBC> z);
+  template <class TBC> Complex <TBC> polar(TBC rho, TBC theta);
+  template <class TBC> Complex <TBC> proj(Complex <TBC> z);
+  template <class TBC> Complex <TBC> sqrt(Complex <TBC> z);
+  template <class TBC> Complex <TBC> sin(Complex <TBC> z);
+  template <class TBC> Complex <TBC> cos(Complex <TBC> z);
+  template <class TBC> Complex <TBC> tan(Complex <TBC> z);
+  template <class TBC> Complex <TBC> sinh(Complex <TBC> z);
+  template <class TBC> Complex <TBC> cosh(Complex <TBC> z);
+  template <class TBC> Complex <TBC> tanh(Complex <TBC> z);
+  template <class TBC> Complex <TBC> asin(Complex <TBC> z);
+  template <class TBC> Complex <TBC> acos(Complex <TBC> z);
+  template <class TBC> Complex <TBC> atan(Complex <TBC> z);
+  template <class TBC> Complex <TBC> asinh(Complex <TBC> z);
+  template <class TBC> Complex <TBC> acosh(Complex <TBC> z);
+  template <class TBC> Complex <TBC> atanh(Complex <TBC> z);
+  template <class TBC> Complex <TBC> exp(Complex <TBC> z);
+  template <class TBC> Complex <TBC> pow(Complex <TBC> z0, Complex <TBC> z1);
+  template <class TBC> Complex <TBC> pow(Complex <TBC> z0, TBC n);
+  template <class TBC> Complex <TBC> pow(TBC n, Complex <TBC> z1);
+  template <class TBC> Complex <TBC> log(Complex <TBC> z);
+  template <class TBC> Complex <TBC> log(Complex <TBC> z, int k);
+  template <class TBC> Complex <TBC> logi(Complex <TBC> z);
+  template <class TBC> Complex <TBC> logi(Complex <TBC> z, int k);
+  template <class TBC> Complex <TBC> log10(Complex <TBC> z);
+  template <class TBC> Complex <TBC> log10(Complex <TBC> z, int k);
+  template <class TBC> Complex <TBC> log2(Complex <TBC> z);
+  template <class TBC> Complex <TBC> log2(Complex <TBC> z, int k);
+  template <class TBC> Complex <TBC> tgamma(Complex <TBC> z);
+  template <class TBC> Complex <TBC> lgamma(Complex <TBC> z);
+  template <class TBC> Complex <TBC> tbeta(Complex <TBC> z0, Complex <TBC> z1);
+  template <class TBC> Complex <TBC> lbeta(Complex <TBC> z0, Complex <TBC> z1);
+  template <class TBC> Complex <TBC> tpi(Complex <TBC> z);
+  template <class TBC> Complex <TBC> lpi(Complex <TBC> z);
+}
+
+template <class TBC> void bsl::Complex<TBC>::Print(std::ostream & eix) const {
+  if (im == TBC(0))
+    eix << re;
+  else if (re == TBC(0))
+    eix << im << "i";
+  else
+    eix << re << ((im >= 0.0) ? "+" : "") << im << "i";
+}
+
+template <class TBC> void bsl::Complex<TBC>::Scan(std::istream & ent) {
+  ent >> re >> im;
+}
+
+template <class TBC> bsl::Complex<TBC>::Complex(TBC r, TBC i) {
+  re = r;
+  im = i;
+}
+
+template <class TBC> bsl::Complex<TBC>::Complex(const bsl::Complex <TBC> & z) {
+  operator=(z);
+}
+
+template <class TBC> void bsl::Complex<TBC>::real(TBC r) {
+  re = r;
+}
+
+template <class TBC> void bsl::Complex<TBC>::imag(TBC i) {
+  im = i;
+}
+
+template <class TBC> bsl::Complex<TBC> & bsl::Complex<TBC>::operator=(const TBC & val) {
+  re = val;
+  im = TBC(0);
+  return *this;
+}
+
+template <class TBC> bsl::Complex<TBC> & bsl::Complex<TBC>::operator=(const bsl::Complex <TBC> & z) {
+  re = z.re;
+  im = z.im;
+  return *this;
+}
+
+template <class TBC> bsl::Complex<TBC> & bsl::Complex<TBC>::operator+=(const TBC & val) {
+  re += val;
+  return *this;
+}
+
+template <class TBC> bsl::Complex<TBC> & bsl::Complex<TBC>::operator+=(const bsl::Complex <TBC> &z) {
+  re += z.re;
+  im += z.im;
+  return *this;
+}
+
+template <class TBC> bsl::Complex<TBC> & bsl::Complex<TBC>::operator-=(const TBC & val) {
+  re -= val;
+  return *this;
+}
+
+template <class TBC> bsl::Complex<TBC> & bsl::Complex<TBC>::operator-=(const bsl::Complex <TBC> &z) {
+  re -= z.re;
+  im -= z.im;
+  return *this;
+}
+
+template <class TBC> bsl::Complex<TBC> & bsl::Complex<TBC>::operator*=(const TBC & val) {
+  re *= val;
+  im *= val;
+  return *this;
+}
+
+template <class TBC> bsl::Complex<TBC> & bsl::Complex<TBC>::operator*=(const bsl::Complex <TBC> &z) {
+  re = (re * z.re) - (im * z.im);
+  im = (re * z.im) + (im * z.re);
+  return *this;
+}
+
+template <class TBC> bsl::Complex<TBC> & bsl::Complex<TBC>::operator/=(const TBC & val) {
+  re /= val;
+  im /= val;
+  return *this;
+}
+
+template <class TBC> bsl::Complex<TBC> & bsl::Complex<TBC>::operator/=(const bsl::Complex <TBC> &z) {
+  TBC den = (z.re * z.re) + (z.im * z.im);
+  re = ((re * z.re) + (im * z.im)) / den;
+  im = ((im * z.re) - (re * z.im)) / den;
+  return *this;
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::Complex<TBC>::operator+(const TBC & val) const{
+  return bsl::Complex <TBC> (re + val, im);
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::Complex<TBC>::operator+(const bsl::Complex <TBC> & z) const {
+  return bsl::Complex <TBC> (re + z.re, im + z.im);
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::Complex<TBC>::operator-(const TBC & val) const{
+  return bsl::Complex <TBC> (re - val, im);
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::Complex<TBC>::operator-(const bsl::Complex <TBC> & z) const {
+  return bsl::Complex <TBC> (re - z.re, im - z.im);
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::Complex<TBC>::operator*(const TBC & val) const{
+  return bsl::Complex <TBC> (re * val, im * val);
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::Complex<TBC>::operator*(const bsl::Complex <TBC> & z) const {
+  if (z.re == TBC(0))
+    return bsl::Complex <TBC> (-im * z.im, re * z.im);
+  else if (z.im == TBC(0))
+    return bsl::Complex <TBC> (re * z.re, im * z.im);
+  else
+    return bsl::Complex <TBC> ((re * z.re) - (im * z.im), (re * z.im) + (z.re * im));
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::Complex<TBC>::operator/(const TBC & val) const{
+  return bsl::Complex <TBC> (re / val, im / val);
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::Complex<TBC>::operator/(const bsl::Complex <TBC> & z) const {
+  if (z.re == TBC(0))
+    return bsl::Complex <TBC> (im / z.im, -re / z.im);
+  else if (z.im == TBC(0))
+    return bsl::Complex <TBC> (re / z.re, im / z.re);
+  else {
+    TBC den = (z.re * z.re) + (z.im * z.im);
+    return bsl::Complex <TBC> (((re * z.re) + (im * z.im)) / den, ((im * z.re) - (re * z.im)) / den);
+  }
+}
+
+template <class TBC> bool bsl::Complex<TBC>::operator==(const TBC & val) const {
+  return ((re == val) and (im == TBC(0)));
+}
+
+template <class TBC> bool bsl::Complex<TBC>::operator==(const bsl::Complex <TBC> & z) const {
+  return ((re == z.re) and (im == z.im));
+}
+
+template <class TBC> bool bsl::Complex<TBC>::operator!=(const TBC & val) const {
+  return ((re != val) or (im != TBC(0)));
+}
+
+template <class TBC> bool bsl::Complex<TBC>::operator!=(const bsl::Complex <TBC> & z) const {
+  return ((re != z.re) or (im != z.im));
+}
+
+template <class TBC> bool bsl::Complex<TBC>::operator<(const bsl::Complex <TBC> & z) const {
+  return (((re * re) + (im * im)) < ((z.re * z.re) + (z.im * z.im)));
+}
+
+template <class TBC> bool bsl::Complex<TBC>::operator<=(const bsl::Complex <TBC> & z) const {
+  return (((re * re) + (im * im)) <= ((z.re * z.re) + (z.im * z.im)));
+}
+
+template <class TBC> bool bsl::Complex<TBC>::operator>(const bsl::Complex <TBC> & z) const {
+  return (((re * re) + (im * im)) > ((z.re * z.re) + (z.im * z.im)));
+}
+
+template <class TBC> bool bsl::Complex<TBC>::operator>=(const bsl::Complex <TBC> & z) const {
+  return (((re * re) + (im * im)) >= ((z.re * z.re) + (z.im * z.im)));
+}
+
+template <class TBC> bsl::Complex<TBC>::operator int() const {
+  return (int) re;
+}
+
+template <class TBC> bsl::Complex<TBC>::operator float() const {
+  return (float) re;
+}
+
+template <class TBC> bsl::Complex<TBC>::operator double() const {
+  return (double) re;
+}
+
+template <class TBC> bsl::Complex<TBC>::operator long double() const {
+  return (long double) re;
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::operator+(const TBC val, const bsl::Complex <TBC> z) {
+  return bsl::Complex <TBC> (val + z.re, z.im);
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::operator-(const TBC val, const bsl::Complex <TBC> z) {
+  return bsl::Complex <TBC> (val - z.re, TBC(0) - z.im);
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::operator*(const TBC val, const bsl::Complex <TBC> z) {
+  return bsl::Complex <TBC> (val * z.re, val * z.im);
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::operator/(const TBC val, const bsl::Complex <TBC> z) {
+  TBC den = (z.re * z.re) + (z.im * z.im);
+  return bsl::Complex <TBC> ((val * z.re) / den, (-val * z.im) / den);
+}
+
+template <class TBC> bool bsl::operator==(const TBC & val, const bsl::Complex <TBC> & z) {
+  return ((z.re == val) and (z.im == TBC(0)));
+}
+
+template <class TBC> bool bsl::operator!=(const TBC & val, const bsl::Complex <TBC> & z) {
+  return ((z.re != val) or (z.im != TBC(0)));
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::operator+(const bsl::Complex <TBC> & z) {
+  return bsl::Complex <TBC> (z.re, z.im);
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::operator-(const bsl::Complex <TBC> & z) {
+  return bsl::Complex <TBC> (-z.re, -z.im);
+}
+
+template <class TBC> std::istream & bsl::operator>>(std::istream & ent, bsl::Complex <TBC> & z) {
+  z.Scan(ent);
+  return ent;
+}
+
+template <class TBC> std::ostream & bsl::operator<<(std::ostream & eix, const bsl::Complex <TBC> & z) {
+  z.Print(eix);
+  return eix;
+}
+
+template <class TBC> bool bsl::isinf(bsl::Complex <TBC> z) {
+  return ((std::isinf(z.re) or std::isinf(z.im)));
+}
+
+template <class TBC> bool bsl::isnan(bsl::Complex <TBC> z) {
+  return ((std::isnan(z.re)) or (std::isnan(z.im)));
+}
+
+template <class TBC> TBC bsl::real(bsl::Complex <TBC> z) {
+  return z.re;
+}
+
+template <class TBC> TBC bsl::imag(bsl::Complex <TBC> z) {
+  return z.im;
+}
+
+template <class TBC> TBC bsl::abs(bsl::Complex <TBC> z) {
+  return std::sqrt((z.re * z.re) + (z.im * z.im));
+}
+
+template <class TBC> TBC bsl::arg(bsl::Complex <TBC> z) {
+  return std::atan2(z.im, z.re);
+}
+
+template <class TBC> TBC bsl::norm(bsl::Complex <TBC> z) {
+  return ((z.re * z.re) + (z.im * z.im));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::conj(bsl::Complex <TBC> z) {
+  return bsl::Complex <TBC> (z.re, -z.im);
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::polar(TBC rho, TBC theta) {
+  return bsl::Complex <TBC> (rho * std::cos(theta), rho * std::sin(theta));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::proj(bsl::Complex <TBC> z) {
+  if ((isinf(z.re)) or (isinf(z.im)) or (isnan(z.re)) or (isnan(z.im)))
+    return bsl::Complex <TBC> (TBC(1) / TBC(0), TBC(0));
+  return z;
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::sqrt(bsl::Complex <TBC> z) {
+  if (z.re == TBC(0)) {
+    if (z.im >= TBC(0))
+      return bsl::Complex <TBC> (std::sqrt(TBC(0.5) * z.im), std::sqrt(TBC(0.5) * z.im));
+    else
+      return bsl::Complex <TBC> (std::sqrt(TBC(0.5) * -z.im), -std::sqrt(TBC(0.5) * -z.im));
+  }
+  else if (z.im == TBC(0)) {
+    if (z.re >= TBC(0))
+      return bsl::Complex <TBC> (std::sqrt(z.re), TBC(0));
+    else
+      return bsl::Complex <TBC> (TBC(0), std::sqrt(-z.re));
+  }
+  else if (z.im > TBC(0)) {
+    TBC mod = (z.re * z.re) + (z.im * z.im);
+    return bsl::Complex <TBC> (std::sqrt(TBC(0.5) * (std::sqrt(mod) + z.re)), std::sqrt(TBC(0.5) * (std::sqrt(mod) - z.re)));
+  }
+  else {
+    TBC mod = (z.re * z.re) + (z.im * z.im);
+    return bsl::Complex <TBC> (std::sqrt(TBC(0.5) * (std::sqrt(mod) + z.re)), -std::sqrt(TBC(0.5) * (std::sqrt(mod) - z.re)));
+  }
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::sin(bsl::Complex <TBC> z) {
+  bsl::Complex <TBC> ret;
+  ret.re = ret.im = TBC(0);
+  if (z.im == TBC(0))
+    ret.re = std::sin(z.re);
+  else if (z.re == TBC(0))
+    ret.im = std::sinh(z.im);
+  else {
+    ret.re = std::sin(z.re) * std::cosh(z.im);
+    ret.im = std::cos(z.re) * std::sinh(z.im);
+  }
+  return ret;
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::cos(bsl::Complex <TBC> z) {
+  bsl::Complex <TBC> ret;
+  ret.re = ret.im = TBC(0);
+  if (z.im == TBC(0))
+    ret.re = std::cos(z.re);
+  else if (z.re == TBC(0))
+    ret.re = std::cosh(z.im);
+  else {
+    ret.re = std::cos(z.re) * std::cosh(z.im);
+    ret.im = -(std::sin(z.re) * std::sinh(z.im));
+  }
+  return ret;
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::tan(bsl::Complex <TBC> z) {
+  bsl::Complex <TBC> ret;
+  ret.re = ret.im = TBC(0);
+  if (z.im == TBC(0))
+    ret.re = std::tan(z.re);
+  else if (z.re == TBC(0))
+    ret.im = std::tanh(z.im);
+  else {
+    TBC sRe = std::sin(z.re), cRe = std::cos(z.re), shIm = std::sinh(z.im), chIm = std::cosh(z.im);  
+    ret = (bsl::Complex <TBC> (sRe * chIm, cRe * shIm)) / (bsl::Complex <TBC> (cRe * chIm, -sRe * shIm));
+  }
+  return ret;
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::sinh(bsl::Complex <TBC> z) {
+  bsl::Complex <TBC> ret;
+  ret.re = ret.im = TBC(0);
+  if (z.im == TBC(0))
+    ret.re = std::sinh(z.re);
+  else if (z.re == TBC(0))
+    ret.im = std::sin(z.im);
+  else {
+    ret.re = std::sinh(z.re) * std::cos(z.im);
+    ret.im = std::cosh(z.re) * std::sin(z.im);
+  }
+  return ret;
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::cosh(bsl::Complex <TBC> z) {
+  bsl::Complex <TBC> ret;
+  ret.re = ret.im = TBC(0);
+  if (z.im == TBC(0))
+    ret.re = std::cosh(z.re);
+  else if (z.re == TBC(0))
+    ret.re = std::cos(z.im);
+  else {
+    ret.re = std::cosh(z.re) * std::cos(z.im);
+    ret.im = std::sinh(z.re) * std::sin(z.im);
+  }
+  return ret;
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::tanh(bsl::Complex <TBC> z) {
+  bsl::Complex <TBC> ret;
+  ret.re = ret.im = TBC(0);
+  if (z.im == TBC(0))
+    ret.re = std::tanh(z.re);
+  else if (z.re == TBC(0))
+    ret.im = std::tan(z.im);
+  else {
+    TBC shRe = std::sinh(z.re), chRe = std::cosh(z.re), sIm = std::sin(z.im), cIm = std::cos(z.im);  
+    ret = (bsl::Complex <TBC> (shRe * cIm, chRe * sIm)) / (bsl::Complex <TBC> (chRe * cIm, shRe * sIm));
+  }
+  return ret;
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::asin(bsl::Complex <TBC> z) {
+  bsl::Complex <TBC> i (0, 1), ret (0, 0);
+  ret = -i * bsl::log((i * z) + bsl::sqrt(TBC(1) - (z * z)));
+  return ret;
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::acos(bsl::Complex <TBC> z) {
+  bsl::Complex <TBC> i (0, 1), ret (0, 0);
+  ret = -i * bsl::log(z + bsl::sqrt((z * z) - TBC(1)));
+  return ret;
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::atan(bsl::Complex <TBC> z) {
+  bsl::Complex <TBC> i (0, 1), ret (0, 0);
+  ret = -i * TBC(0.5) * bsl::log((TBC(1) + (i * z)) / (TBC(1) - (i * z)));
+  return ret;
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::asinh(bsl::Complex <TBC> z) {
+  bsl::Complex <TBC> ret (0, 0);
+  ret = bsl::log(z + bsl::sqrt(TBC(1) + (z * z)));
+  return ret;
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::acosh(bsl::Complex <TBC> z) {
+  bsl::Complex <TBC> ret (0, 0);
+  ret = TBC(2) * bsl::log(bsl::sqrt(TBC(0.5) * (z + TBC(1))) + bsl::sqrt(TBC(0.5) * (z - TBC(1))));
+  return ret;
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::atanh(bsl::Complex <TBC> z) {
+  bsl::Complex <TBC> ret (0, 0);
+  ret = TBC(0.5) * bsl::log((TBC(1) + z) / (TBC(1) - z));
+  return ret;
+}
+
+template <class TBC> bsl::Complex<TBC> bsl::exp(bsl::Complex <TBC> z) {
+  TBC e = std::exp(z.re);
+  if (z.im == TBC(0))
+    return bsl::Complex <TBC> (e, z.im);
+  return bsl::Complex <TBC> (e * std::cos(z.im), e * std::sin(z.im));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::pow(bsl::Complex <TBC> z0, bsl::Complex <TBC> z1) {
+  return bsl::exp(z1 * bsl::log(z0));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::pow(bsl::Complex <TBC> z0, TBC n) {
+  return bsl::polar(TBC(std::pow(bsl::abs(z0), TBC(n))), TBC(n * bsl::arg(z0)));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::pow(TBC n, bsl::Complex <TBC> z1) {
+  return bsl::polar(TBC(std::pow(TBC(n), TBC(z1.re))), TBC(z1.im * std::log(n)));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::log(bsl::Complex <TBC> z) {
+  return bsl::Complex <TBC> (std::log(bsl::abs(z)), bsl::arg(z));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::log(bsl::Complex <TBC> z, int k) {
+  return bsl::Complex <TBC> (std::log(bsl::abs(z)), bsl::arg(z) + TBC(2) * TBC(k) * TBC(C_PI));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::logi(bsl::Complex <TBC> z) {
+  bsl::Complex <TBC> ipi (TBC(0), TBC(-1) / TBC(C_PI));
+  bsl::Complex <TBC> lnz = TBC(2) * bsl::log(z);
+  return lnz * ipi;
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::logi(bsl::Complex <TBC> z, int k) {
+  bsl::Complex <TBC> ipi (TBC(0), TBC(-1) / TBC(C_PI));
+  bsl::Complex <TBC> lnz = TBC(2) * bsl::log(z);
+  return ((lnz * ipi) + TBC(4) * TBC(k));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::log10(bsl::Complex <TBC> z) {
+  return (bsl::log(z) / TBC(C_LN10));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::log10(bsl::Complex <TBC> z, int k) {
+  return (bsl::log(z, k) / TBC(C_LN10));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::log2(bsl::Complex <TBC> z) {
+  return (bsl::log(z) / TBC(C_LN2));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::log2(bsl::Complex <TBC> z, int k) {
+  return (bsl::log(z, k) /  TBC(C_LN2));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::tgamma(bsl::Complex <TBC> z) {
+  int g = 7;
+  TBC p[9] = {TBC(0.99999999999980993), TBC(676.5203681218851), TBC(-1259.1392167224028), TBC(771.32342877765313), TBC(-176.61502916214059), TBC(12.507343278686905), TBC(-0.13857109526572012), TBC(9.9843695780195716e-6), TBC(1.5056327351493116e-7)};
+  if (z.im == TBC(0))
+    return bsl::Complex <TBC> (std::tgamma(z.re), z.im);
+  else if (z.re < TBC(0.5))
+    return TBC(C_PI) / (bsl::sin(TBC(C_PI) * z) * bsl::tgamma(TBC(1) - z));
+  else {
+    z -= TBC(1);
+    bsl::Complex <TBC> x = p[0];
+    for (int i = 1; i < (g + 2); i++)
+      x += p[i] / (z + TBC(i));
+    bsl::Complex <TBC> t = z + TBC(g) + TBC(0.5);
+    return TBC(std::sqrt(TBC(2 * C_PI))) * bsl::pow(t, z + TBC(0.5)) * bsl::exp(-t) * x;
+  }
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::lgamma(bsl::Complex <TBC> z) {
+  int g = 7;
+  TBC p[9] = {TBC(0.99999999999980993), TBC(676.5203681218851), TBC(-1259.1392167224028), TBC(771.32342877765313), TBC(-176.61502916214059), TBC(12.507343278686905), TBC(-0.13857109526572012), TBC(9.9843695780195716e-6), TBC(1.5056327351493116e-7)};
+  if (z.im == TBC(0))
+    return bsl::Complex <TBC> (std::lgamma(z.re), z.im);
+  else if (z.re < TBC(0.5))
+    return (TBC(std::log(TBC(C_PI))) - bsl::log(bsl::sin(TBC(C_PI) * z)) - bsl::lgamma(TBC(1) - z));
+  else {
+    z -= TBC(1);
+    bsl::Complex <TBC> x = p[0];
+    for (int i = 1; i < (g + 2); i++)
+      x += p[i] / (z + TBC(i));
+    bsl::Complex <TBC> t = z + TBC(g) + TBC(0.5);
+    return (TBC(std::log(std::sqrt(TBC(2 * C_PI)))) + ((z + TBC(0.5)) * bsl::log(t)) - t + bsl::log(x));
+  }
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::tbeta(bsl::Complex <TBC> z0, bsl::Complex <TBC> z1) {
+  return (bsl::tgamma(z0) * bsl::tgamma(z1)) / bsl::tgamma(z0 + z1);
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::lbeta(bsl::Complex <TBC> z0, bsl::Complex <TBC> z1) {
+  return (bsl::lgamma(z0) + bsl::lgamma(z1) - bsl::lgamma(z0 + z1));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::tpi(bsl::Complex <TBC> z) {
+  return bsl::tgamma(z + TBC(1));
+}
+
+template <class TBC> bsl::Complex <TBC> bsl::lpi(bsl::Complex <TBC> z) {
+  return bsl::lgamma(z + TBC(1));
+}
+
+#endif

@@ -1,0 +1,253 @@
+// -*-c++-*-
+// 01-01-2015
+// billy
+// llista
+// llista enllaçada amb node de capçalera
+// les diferencies amb la llista enllaçada normal, son que te node de capçalera, hi ha que ficar primer->seg excepte a Llista::insert i que quan creem primer ho fem amb new Node();
+#ifndef _BSL_LLISTA_
+#define _BSL_LLISTA_
+#include <iostream>
+#include <list>
+#include <vector>
+#inlcude <cstdlib>
+
+namespace bsl {
+  template <class TBL> class Llista;
+
+  template <class TBL> class Llista {
+  private: 
+    struct Node {
+      TBL elem;
+      Node * seg;
+      Node(const TBL & dada = TBL(), Node * ptr = 0) : elem(dada), seg(ptr) {}
+    };
+    typedef Node * Link;
+    Link primer;
+    int tam;
+    void print(std::ostream & eix) const;
+  public:
+    Llista();
+    Llista(const Llista <TBL> & orig);
+    Llista(const std::vector <TBL> & orig);
+    ~Llista();
+    Llista<TBL> & operator=(const Llista <TBL> & orig);
+    Llista<TBL> & operator=(const std::vector <TBL> & orig);
+    void clear();
+    int size() const;
+    bool empty() const;
+    const TBL & get(int pos) const;
+    void insert(const TBL & elem, int pos);
+    void erase(int pos);
+    void erase(const Llista <TBL> & L);
+    int search(const TBL & element) const;
+    void rotate(int n);
+    std::list <TBL> list_cpp() const;
+    std::vector <TBL> vec_cpp() const;
+    template <class TBL1> friend std::ostream & operator<< (std::ostream & eix, const Llista <TBL1> & l);
+  };
+
+  template <class TBL> std::ostream & operator<< (std::ostream & eix, const Llista <TBL> & l);
+}
+
+template <class TBL> void bsl::Llista<TBL>::print(std::ostream & eix) const {
+  int tam = size();
+  Link p = primer->seg;
+  eix << "[";
+  for (int i = 1; i < tam; i++) {
+    eix << p->elem << ", " ;
+    p = p->seg;
+  }
+  eix << p->elem << "]";
+}
+
+template <class TBL> bsl::Llista<TBL>::Llista() {
+  primer = new Node();
+  tam = 0;
+}
+
+template <class TBL> bsl::Llista<TBL>::Llista(const bsl::Llista<TBL> & orig) {
+  primer = new Node();
+  operator=(orig);
+}
+
+template <class TBL> bsl::Llista<TBL>::Llista(const std::vector <TBL> & orig) {
+  primer = new Node();
+  operator=(orig);
+}
+
+template <class TBL> bsl::Llista<TBL>::~Llista() {
+  clear();
+  delete primer;
+}
+
+template <class TBL> bsl::Llista<TBL> & bsl::Llista<TBL>::operator=(const bsl::Llista<TBL> & orig) {
+  if (this != &orig) {
+    clear();
+    tam = orig.tam;
+    if (tam > 0) {
+      Link p = primer, q = orig.primer->seg;
+      while (q != NULL) {
+	p->seg = new Node(q->elem);
+	p = p->seg;
+	q = q->seg;
+      }
+    }
+  }
+  return *this;
+}
+
+template <class TBL> bsl::Llista<TBL> & bsl::Llista<TBL>::operator=(const std::vector <TBL> & orig) {
+  clear();
+  tam = orig.size();
+  if (tam > 0) {
+    Link p = primer;
+    int q = 0;
+    while (q < tam) {
+      p->seg = new Node(orig[q]);
+      p = p->seg;
+      q++;
+    }
+  }
+  return *this;
+}
+
+template <class TBL> void bsl::Llista<TBL>::clear() {
+  Link ptr = primer->seg, next;
+  while (ptr != NULL) {
+    next = ptr->seg;
+    delete ptr;
+    ptr = next;
+  }
+  tam = 0;
+}
+
+template <class TBL> int bsl::Llista<TBL>::size() const {
+  return tam;
+}
+
+template <class TBL> bool bsl::Llista<TBL>::empty() const {
+  return (tam == 0);
+}
+
+template <class TBL> const TBL & bsl::Llista<TBL>::get(int pos) const {
+  if (pos < 1 || pos > tam) {
+    std::cerr << "Error a l'intentar obtenir l'element." << std::endl;
+    exit(-1);
+  }
+  Link q = primer->seg;
+  for (int i=1; i <pos; i++)
+    q = q->seg;
+  return q->elem;
+}
+
+template <class TBL> void bsl::Llista<TBL>::insert(const TBL & element, int pos) {
+  if (pos < 1 || pos > tam + 1) {
+    std::cerr << "Error en l'insercio." << std::endl;
+    exit(-1);
+  }
+  Link q = primer;
+  for (int i = 1; i <pos; i++)
+    q = q->seg ;
+  q->seg = new Node(element,q->seg);
+  tam++;
+}
+
+template <class TBL> void bsl::Llista<TBL>::erase(int pos) {
+  if (pos > tam || pos < 1) {
+    std::cerr << "Error en l'esborrat." << std::endl;
+    exit(-1);
+  }
+     
+  Link q, p = primer->seg;
+  for (int i=1; i <pos-1; i++)
+    p = p->seg;
+  q = p->seg;
+  p->seg = p->seg->seg;
+
+  delete q;
+  tam--;
+}
+
+template <class TBL> void bsl::Llista<TBL>::erase(const bsl::Llista<TBL> & L) {
+  int pos = 1;
+  Link p = primer, q = L.primer->seg, elim; 
+  while (p->seg != NULL && q != NULL) {
+    if (q->elem == pos) {
+      elim = p->seg;
+      p->seg = p->seg->seg;
+      delete elim;
+      tam--;
+      pos++;
+    }
+    else if (pos < q->elem) {
+      p = p->seg;
+      pos++;
+    }
+    else
+      q = q->seg;
+  }
+}
+
+template <class TBL> int bsl::Llista<TBL>::search(const TBL & element) const {
+  Link p = primer->seg;
+  for (int i = 1; i <= tam ; i++)
+    if (p->elem == element)
+      return i;
+    else
+      p = p->seg;
+  return -1;
+}
+
+template <class TBL> void bsl::Llista<TBL>::rotate(int n) {
+  Link p, q, aux;
+
+  if (!empty()) {
+    p = aux = primer->seg;
+    n = n % tam;
+    if (n < 0)                             // els casos negatius els convertim en positius
+      n = tam + n;
+    if (n > 0 && n < tam){
+      for (int i = 1; i < tam; i++) {     // per a casos positius
+	if (i == (tam - n))
+	  q = p;
+	p = p->seg;
+      }
+      primer->seg = q->seg;
+      p->seg = aux;
+      q->seg = NULL;
+    }
+  }
+  else {
+    std::cerr << "Error en la rotacio. La llista esta buida." << std::endl;
+    exit(-1);
+  }
+}
+
+template <class TBL> std::list <TBL> bsl::Llista<TBL>::list_cpp() const {
+  std::list <TBL> ret;
+  Link p = primer->seg;
+  for (int i = 1; i < tam; i++) {
+    ret.push_back(p->elem);
+    p = p->seg;
+  }
+  ret.push_back(p->elem);
+  return ret;
+}
+
+template <class TBL> std::vector <TBL> bsl::Llista<TBL>::vec_cpp() const {
+  std::vector <TBL> ret;
+  Link p = primer->seg;
+  for (int i = 1; i < tam; i++) {
+    ret.push_back(p->elem);
+    p = p->seg;
+  }
+  ret.push_back(p->elem);
+  return ret;
+}
+
+template <class TBL> std::ostream & bsl::operator<<(std::ostream & eix, const bsl::Llista<TBL> & l) {
+  l.print(eix);
+  return eix;
+}
+
+#endif

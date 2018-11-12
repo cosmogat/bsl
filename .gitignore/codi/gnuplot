@@ -1,0 +1,116 @@
+// -*- c++ -*-
+// 03-10-2015
+// billy
+// gnuplot
+#ifndef _BSL_GNUPLOT_
+#define _BSL_GNUPLOT_
+#ifndef _GNUPLOT_PATH_
+#define _GNUPLOT_PATH_ "/usr/bin/gnuplot"
+#endif
+#define _GNUPLOT_MAXBIN_ 50
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <cstdio>
+#include <cstdlib>
+#include <cstdarg>
+#include <cstring>
+#include <unistd.h>
+
+namespace bsl {
+  class Gnuplot {
+  private:
+    FILE * arxiu;
+    char fitBin[_GNUPLOT_MAXBIN_][20];
+    unsigned int numBin;
+    void newBin();
+    void delBin();
+  public:
+    Gnuplot();
+    ~Gnuplot();
+    void operator()(const char * text, ...) const;
+    template <class TBVV> char * pbin(std::vector<std::vector<TBVV> > dades);
+  };
+}
+
+void bsl::Gnuplot::newBin() {
+  if (numBin >= _GNUPLOT_MAXBIN_)
+    delBin();
+  strcpy(fitBin[numBin], P_tmpdir);
+  strcat(fitBin[numBin], "/gnuplot-XXXXXX");
+  mkstemp(fitBin[numBin]);
+  numBin++;
+}
+
+void bsl::Gnuplot::delBin() {
+  for (unsigned int i = 0; i < numBin; i++)
+    unlink(fitBin[i]);
+  numBin = 0;
+}
+
+bsl::Gnuplot::Gnuplot() {
+  arxiu = popen(_GNUPLOT_PATH_, "w");
+  numBin = 0;
+}
+
+bsl::Gnuplot::~Gnuplot() {
+  fprintf(arxiu, "exit\n");
+  fflush(arxiu);
+  pclose(arxiu);
+  delBin();
+}
+
+void bsl::Gnuplot::operator()(const char * text, ...) const {
+  va_list pa;
+  int ent;
+  char * cad, car;
+  const char * p;
+  float flo;
+  va_start(pa, text);
+  for (p = text; *p; p++) {
+    if (*p != '%')
+      fprintf(arxiu, "%c", *p);
+    else {
+      switch (*++p) {
+      case 'i':
+      case 'd':
+	ent = va_arg(pa, int);
+	fprintf(arxiu, "%d", ent);
+	break;
+      case 'c':
+	car = (char) va_arg(pa, int);
+	fprintf(arxiu, "%c", car);
+	break;
+      case 's':
+	cad = va_arg(pa, char *);
+	fprintf(arxiu, "%s", cad);
+	break;
+      case 'f':
+	flo = (float) va_arg(pa, double);
+	fprintf(arxiu, "%f", flo);
+	break;
+      default:
+	fprintf(arxiu, "%c", *p);
+	break;
+      }
+    }
+  }
+  fprintf(arxiu, "\n");
+}
+
+template <class TBVV> char * bsl::Gnuplot::pbin(std::vector<std::vector<TBVV> > dades) {
+  std::ofstream tmp_f;
+  char * ret;
+  newBin();
+  ret = new char[strlen(fitBin[numBin - 1])];
+  strcpy(ret, fitBin[numBin - 1]);
+  tmp_f.open(fitBin[numBin - 1], std::ios::binary);
+  for (unsigned int j = 0; j < dades[0].size(); j++)
+    for (unsigned int i = 0; i < dades.size(); i++)
+      tmp_f.write((char *) &dades[i][j], sizeof(TBVV));
+  tmp_f.close();
+
+  return ret;
+}
+
+#endif

@@ -1,0 +1,601 @@
+// -*-c++-*-
+// 23-12-2014
+// billy
+// cadena
+#ifndef _BSL_CADENA_
+#define _BSL_CADENA_
+#include <iostream>
+#include <cstring>
+#include <climits>
+#include <cstdlib>
+#include <vector>
+
+namespace bsl {
+  class Cadena {
+  private:
+    char * cad;
+  public:
+    explicit Cadena();                 
+    Cadena(const char * s);
+    Cadena(const Cadena & dre);
+    ~Cadena();
+    void clear();
+    int size() const;
+    int max_size() const;
+    bool empty() const;
+    const char * c_str() const;
+    int strpos(const Cadena & s) const;
+    int strpos(const char * s) const;
+    int strpos(const Cadena & s, int ini) const;
+    int strpos(const char * s, int ini) const;
+    int strcount(const Cadena & s) const;
+    int strcount(const char * s) const;
+    Cadena str_replace(const Cadena & vella, const Cadena & nova) const;
+    Cadena ltrim() const;
+    Cadena rtrim() const;
+    Cadena trim() const;
+    Cadena substr(int ini) const;
+    Cadena substr(int ini, int tam) const;
+    Cadena strtolower() const;
+    Cadena strtoupper() const;
+    Cadena ucfirst() const;
+    Cadena ucwords() const;
+    std::vector <Cadena> explode(Cadena del) const;
+    std::vector <Cadena> explode(const char * del) const;
+    Cadena implode(std::vector <Cadena> vec) const;
+    Cadena implode(std::vector <Cadena> vec, Cadena del) const;
+    int cad2i() const;
+    float cad2f() const;
+    double cad2d() const;
+    long int cad2li() const;
+    long long int cad2lli() const;
+    Cadena & operator=(const Cadena & dre);
+    Cadena & operator=(const char * s);
+    Cadena operator+(const Cadena & dre) const;
+    Cadena operator+(const char * dre) const;
+    Cadena operator+(const int num) const;
+    Cadena operator-(const Cadena & dre) const;
+    Cadena operator-(const char * dre) const;
+    Cadena operator-(const int num) const;
+    Cadena & operator+=(const Cadena & dre);
+    Cadena & operator+=(const char * dre);
+    Cadena & operator+=(const int num);
+    Cadena & operator-=(const Cadena & dre);
+    Cadena & operator-=(const char * dre);
+    Cadena & operator-=(const int num);
+    const char & operator[](int i) const;
+    char & operator[](int i);
+    bool operator==(const Cadena & dre) const;
+    bool operator==(const char * dre) const;
+    bool operator!=(const Cadena & dre) const;
+    bool operator!=(const char * dre) const;
+    bool operator<(const Cadena & dre) const;
+    bool operator<(const char * dre) const;
+    bool operator<=(const Cadena & dre) const;
+    bool operator<=(const char * dre) const;
+    bool operator>(const Cadena & dre) const;
+    bool operator>(const char * dre) const;
+    bool operator>=(const Cadena & dre) const;
+    bool operator>=(const char * dre) const;
+    friend Cadena operator+(const char * esq, const Cadena & dre);
+    friend Cadena operator-(const char * esq, const Cadena & dre);
+    friend bool operator==(const char * esq, const Cadena & dre);
+    friend bool operator!=(const char * esq, const Cadena & dre);
+    friend bool operator<(const char * esq, const Cadena & dre);
+    friend bool operator<=(const char * esq, const Cadena & dre);
+    friend bool operator>(const char * esq, const Cadena & dre);
+    friend bool operator>=(const char * esq, const Cadena & dre);
+    friend std::ostream & operator<<(std::ostream & eix, const Cadena & s);
+    friend std::istream & operator>>(std::istream & eix, Cadena & s);
+  };
+  
+  Cadena operator+(const char * esq, const Cadena & dre);
+  Cadena operator-(const char * esq, const Cadena & dre);
+  bool operator==(const char * esq, const Cadena & dre);
+  bool operator!=(const char * esq, const Cadena & dre);
+  bool operator<(const char * esq, const Cadena & dre);
+  bool operator<=(const char * esq, const Cadena & dre);
+  bool operator>(const char * esq, const Cadena & dre);
+  bool operator>=(const char * esq, const Cadena & dre);
+  std::ostream & operator<<(std::ostream & eix, const Cadena & s);
+  std::istream & operator>>(std::istream & eix, Cadena & s);
+}
+
+bsl::Cadena::Cadena() {
+  cad = new char[1];
+  strcpy(cad, "\0");
+}
+
+bsl::Cadena::Cadena(const char *s) {
+  if (s != NULL){
+    cad = new char[strlen(s) + 1];
+    strcpy(cad, s);
+  }
+  else{
+    std::cerr << "ERROR: Valors incorrectes per a l'objecte Cadena" << std::endl;
+    exit(-1);
+  }
+}
+
+bsl::Cadena::Cadena(const bsl::Cadena & dre) {
+  if (dre.cad != NULL){
+    cad = new char[strlen(dre.cad) + 1];
+    strcpy(cad, dre.cad);
+  }
+  else {
+    std::cerr << "ERROR: Valors incorrectes per a l'objecte Cadena" << std::endl;
+    exit(-1);
+  }
+}
+
+bsl::Cadena::~Cadena() {
+  delete [] cad;
+}
+
+void bsl::Cadena::clear() {
+  delete [] cad;
+  cad = new char[1];
+  strcpy(cad, "\0");
+}
+
+int bsl::Cadena::size() const {
+  return (strlen(cad));
+}
+
+int bsl::Cadena::max_size() const {
+  return INT_MAX;
+}
+
+bool bsl::Cadena::empty() const {
+  return (strcmp(cad, "") == 0);
+}
+
+const char * bsl::Cadena::c_str() const {
+  return (cad);
+}
+
+int bsl::Cadena::strpos(const bsl::Cadena & s) const {
+  return strpos(s, 0);
+}
+
+int bsl::Cadena::strpos(const char * s) const {
+  return strpos(bsl::Cadena (s), 0);
+}
+
+int bsl::Cadena::strpos(const bsl::Cadena & s, int ini) const {
+  int tam_cad = strlen(cad), tam_sub = strlen(s.cad), j = 0;
+  if (tam_sub > tam_cad)
+    return -1;
+  for (int i = ini; i < tam_cad; i++) {
+    if (cad[i] == s.cad[j])
+      j++;
+    else if (cad[i] == s.cad[0])
+      j = 1;
+    else
+      j = 0;
+    if (j == tam_sub)
+      return i - tam_sub + 1;
+  }
+  return -1;
+}
+
+int bsl::Cadena::strpos(const char * s, int ini) const {
+  return strpos(bsl::Cadena (s), ini);
+}
+
+int bsl::Cadena::strcount(const bsl::Cadena & s) const {
+  int num = 0, pos = strpos(s, 0), tam = strlen(s.cad);
+  while (pos != -1) {
+    pos = strpos(s, pos + tam);
+    num++;
+  }
+  return num;
+}
+
+int bsl::Cadena::strcount(const char * s) const {
+  return strcount(bsl::Cadena (s));
+}
+
+bsl::Cadena bsl::Cadena::str_replace(const bsl::Cadena & vella, const bsl::Cadena & nova) const {
+  bsl::Cadena ret = cad;
+  if ((strcmp(vella.cad, nova.cad) == 0) or (strcmp(vella.cad, "") == 0))
+    return ret;
+  int tam0 = strlen(cad), tam1 = strlen(vella.cad), tam2 = strlen(nova.cad); 
+  int pos = strpos(vella, 0), pos2, num = 0;
+  while (pos != -1) {
+    pos = strpos(vella, pos + tam1);
+    num++;
+  }
+  if (num > 0) {
+    char * aux = new char[tam0 - (num * tam1) + (num * tam2) + 1];
+    pos = strpos(vella, 0);
+    int i = 0, j = 0, k = 1;
+    while (i < pos) {
+      aux[i] = cad[i];
+      i++;
+    }
+    while (pos != -1) {
+      j = 0;
+      while (j < tam2) {
+	aux[i] = nova.cad[j];
+	i++;
+	j++;
+      }
+      j = i + (tam1 - tam2) * k;
+      pos2 = strpos(vella, pos + tam1);
+      while ((j < pos2) or (pos2 == -1 and j < tam0)) {
+	aux[i] = cad[j];
+	i++;
+	j++;
+      }
+      k++;
+      pos = pos2;
+    }
+    aux[tam0 - (num * tam1) + (num * tam2)] = '\0';
+    ret = aux;
+    delete [] aux;
+  }
+  return ret;
+}
+
+bsl::Cadena bsl::Cadena::ltrim() const {
+  int num = 0, tam = strlen(cad);
+  while (cad[num] == 32)
+    num++;
+  char * aux = new char[tam - num + 1];
+  for (int i = num; i < tam; i++)
+    aux[i - num] = cad[i];
+  aux[tam - num] = '\0';
+  bsl::Cadena ret = aux;
+  delete [] aux;
+  return ret;
+}
+
+bsl::Cadena bsl::Cadena::rtrim() const {
+  int tam = strlen(cad), num = tam;
+  while (cad[num - 1] == 32)
+    num--;
+  char * aux = new char[num + 1];
+  for (int i = 0; i < num; i++)
+    aux[i] = cad[i];
+  aux[num] = '\0';
+  bsl::Cadena ret = aux;
+  delete [] aux;
+  return ret;
+}
+
+bsl::Cadena bsl::Cadena::trim() const {
+  return ltrim().rtrim();
+}
+
+bsl::Cadena bsl::Cadena::substr(int ini) const {
+  return substr(ini, strlen(cad) - ini);
+}
+
+bsl::Cadena bsl::Cadena::substr(int ini, int tam) const {
+  if (ini < 0)
+    ini = ini + strlen(cad);
+  if (ini > (int) strlen(cad))
+    ini = 0;
+  if ((ini == 0) and (tam == (int) strlen(cad)))
+    return bsl::Cadena(cad);
+  char * aux = new char[tam + 1];
+  for (int i = 0; i < tam; i++)
+    aux[i] = cad[i + ini];
+  aux[tam] = '\0';
+  bsl::Cadena ret = aux;
+  delete [] aux;
+  return ret;
+}
+
+bsl::Cadena bsl::Cadena::strtolower() const {
+  bsl::Cadena ret = cad;
+  for (int i = 0; i < ret.size(); i++)
+    if ((ret.cad[i] > 64) and (ret.cad[i] < 91))
+      ret.cad[i] += 32;
+  return ret;
+}
+
+bsl::Cadena bsl::Cadena::strtoupper() const {
+  bsl::Cadena ret = cad;
+  for (int i = 0; i < ret.size(); i++)
+    if ((ret.cad[i] > 96) and (ret.cad[i] < 123))
+      ret.cad[i] -= 32;
+  return ret;
+}
+
+bsl::Cadena bsl::Cadena::ucfirst() const {
+  bsl::Cadena ret = cad;
+  if ((strlen(ret.cad) > 0) and (ret.cad[0] > 96) and (ret.cad[0] < 123))
+    ret.cad[0] -= 32;
+  return ret;
+}
+
+bsl::Cadena bsl::Cadena::ucwords() const {
+  bsl::Cadena ret = cad;
+  int tam = strlen(ret.cad), i = 1;
+  if ((tam > 0) and (ret.cad[0] > 96) and (ret.cad[0] < 123))
+    ret.cad[0] -= 32;
+  while (i < tam) {
+    if ((ret.cad[i] == 32) and ((i + 1) < tam) and (ret.cad[i + 1] > 96) and (ret.cad[i + 1] < 123))
+      ret.cad[i + 1] -= 32;
+    i++;
+  }
+  return ret;
+}
+
+std::vector <bsl::Cadena> bsl::Cadena::explode(bsl::Cadena del) const {
+  std::vector <bsl::Cadena> ret;
+  int pos = strpos(del, 0), pos2 = 0;
+  int ini = 0, tam = strlen(del.cad), tam_cad = strlen(cad), i, j;
+  while (pos != -1) {
+    char * aux = new char[pos - ini + 1];
+    for (i = ini, j = 0; i < pos; i++, j++)
+      aux[j] = cad[i];
+    aux[j] = '\0';
+    ini = pos + tam;
+    pos2 = pos;
+    pos = strpos(del, pos + tam);
+    ret.push_back(bsl::Cadena (aux));
+    delete [] aux;
+  }
+  if (pos2 == 0)
+    tam = 0;
+  char * aux = new char[tam_cad - pos2 - tam + 1];
+  for (i = ini, j = 0; i < tam_cad; i++, j++)
+    aux[j] = cad[i];
+  aux[j] = '\0';
+  ret.push_back(bsl::Cadena (aux));
+  delete [] aux;
+  return ret;
+}
+
+std::vector <bsl::Cadena> bsl::Cadena::explode(const char * del) const {
+  return explode(bsl::Cadena (del));
+}
+
+bsl::Cadena bsl::Cadena::implode(std::vector <bsl::Cadena> vec) const {
+  return implode(vec, bsl::Cadena (""));
+}
+
+bsl::Cadena bsl::Cadena::implode(std::vector <bsl::Cadena> vec, bsl::Cadena del) const {
+  int tam = 0, size = vec.size();
+  if (size == 0)
+    return (*this + bsl::Cadena());
+  for (int i = 0; i < size; i++)
+    tam += strlen(vec[i].cad);
+  tam += (strlen(del.cad) * (size - 1));
+  char * aux = new char[tam + 1];
+  strcpy(aux, "");
+  for (int i = 0; i < (size - 1); i++) {
+    strcat(aux, vec[i].cad);
+    strcat(aux, del.cad);
+  }
+  strcat(aux, vec[size - 1].cad);
+  bsl::Cadena ret = aux;
+  delete [] aux;
+  return (*this + ret);
+}
+
+int bsl::Cadena::cad2i() const {
+  return atoi(cad);
+}
+
+float bsl::Cadena::cad2f() const {
+  return ((float) atof(cad));
+}
+
+double bsl::Cadena::cad2d() const {
+  return atof(cad);
+}
+
+long int bsl::Cadena::cad2li() const {
+  return atol(cad);
+}
+
+long long int bsl::Cadena::cad2lli() const {
+  return atoll(cad);
+}
+
+bsl::Cadena & bsl::Cadena::operator=(const bsl::Cadena & dre) {
+  if (this != &dre) {
+    delete [] cad;
+    cad = new char[strlen(dre.cad) + 1];
+    strcpy(cad, dre.cad);
+  }
+  return (*this);
+}
+
+bsl::Cadena & bsl::Cadena::operator=(const char * s) {
+  if (strcmp(s, cad) != 0){
+    delete [] cad;
+    cad = new char[strlen(s) + 1];
+    strcpy(cad, s);
+  }
+  return (*this);
+}
+
+bsl::Cadena bsl::Cadena::operator+(const bsl::Cadena & dre) const {
+  bsl::Cadena sum;
+  delete sum.cad;
+  sum.cad = new char[strlen(cad) + strlen(dre.cad) + 1];
+  strcpy(sum.cad, cad);
+  strcat(sum.cad, dre.cad);
+  return sum;
+}
+
+bsl::Cadena bsl::Cadena::operator+(const char * dre) const {
+  return operator+(bsl::Cadena (dre));
+}
+
+bsl::Cadena bsl::Cadena::operator+(const int num) const {
+  bsl::Cadena sum = cad;
+  for (unsigned int i = 0; i < strlen(sum.cad); i++)
+    sum.cad[i] += num;
+  return sum;
+}
+
+bsl::Cadena bsl::Cadena::operator-(const bsl::Cadena & dre) const {
+  return str_replace(dre, bsl::Cadena(""));
+}
+
+bsl::Cadena bsl::Cadena::operator-(const char * dre) const {
+  return operator-(bsl::Cadena (dre));
+}
+
+bsl::Cadena bsl::Cadena::operator-(const int num) const {
+  bsl::Cadena sum = cad;
+  for (unsigned int i = 0; i < strlen(sum.cad); i++)
+    sum.cad[i] -= num;
+  return sum;
+}
+
+bsl::Cadena & bsl::Cadena::operator+=(const bsl::Cadena & dre) {
+  (*this) = (*this) + dre;
+  return (*this);
+}
+
+bsl::Cadena & bsl::Cadena::operator+=(const char * dre) {
+  return operator+=(bsl::Cadena (dre));
+}
+
+bsl::Cadena & bsl::Cadena::operator+=(const int num) {
+  for (unsigned int i = 0; i < strlen(cad); i++)
+    cad[i] += num;
+  return (*this);
+}
+
+bsl::Cadena & bsl::Cadena::operator-=(const bsl::Cadena & dre) {
+  (*this) = (*this) - dre;
+  return (*this);
+}
+
+bsl::Cadena & bsl::Cadena::operator-=(const char * dre) {
+  return operator-=(bsl::Cadena (dre));
+}
+
+bsl::Cadena & bsl::Cadena::operator-=(const int num) {
+  for (unsigned int i = 0; i < strlen(cad); i++)
+    cad[i] -= num;
+  return (*this);
+}
+
+const char & bsl::Cadena::operator[](int i) const {
+  int tam = strlen(cad);
+  if ((i >= 0) and (i < tam))
+    return cad[i];
+  else if ((i < 0) and (-i <= tam))
+    return cad[tam + i];
+  else {
+    std::cerr << "Error en l'index de la cadena" << std::endl;
+    exit(-1);
+  }
+}
+
+char & bsl::Cadena::operator[](int i) {
+  int tam = strlen(cad);
+  if ((i >= 0) and (i < tam))
+    return cad[i];
+  else if ((i < 0) and (-i <= tam))
+    return cad[tam + i];
+  else {
+    std::cerr << "Error en l'index de la cadena" << std::endl;
+    exit(-1);
+  }
+}
+
+bool bsl::Cadena::operator==(const bsl::Cadena & dre) const {
+  return (strcmp(cad, dre.cad) == 0);
+}
+
+bool bsl::Cadena::operator==(const char * dre) const {
+  return (strcmp(cad, dre) == 0);
+}
+
+bool bsl::Cadena::operator!=(const bsl::Cadena & dre) const {
+  return (strcmp(cad, dre.cad) != 0);
+}
+
+bool bsl::Cadena::operator!=(const char * dre) const {
+  return (strcmp(dre, cad) != 0);
+}
+
+bool bsl::Cadena::operator<(const bsl::Cadena & dre) const {
+  return (strcmp(cad, dre.cad) < 0);
+}
+
+bool bsl::Cadena::operator<(const char * dre) const {
+  return (strcmp(cad, dre) < 0);
+}
+
+bool bsl::Cadena::operator<=(const bsl::Cadena & dre) const {
+  return (strcmp(cad, dre.cad) <= 0);
+}
+
+bool bsl::Cadena::operator<=(const char * dre) const {
+  return (strcmp(cad, dre) <= 0);
+}
+
+bool bsl::Cadena::operator>(const bsl::Cadena & dre) const {
+  return (strcmp(cad, dre.cad) > 0);
+}
+
+bool bsl::Cadena::operator>(const char * dre) const {
+  return (strcmp(cad, dre) > 0);
+}
+
+bool bsl::Cadena::operator>=(const bsl::Cadena & dre) const {
+  return (strcmp(cad, dre.cad) >= 0);
+}
+
+bool bsl::Cadena::operator>=(const char * dre) const {
+  return (strcmp(cad, dre) >= 0);
+}
+
+bsl::Cadena bsl::operator+(const char * esq, const bsl::Cadena & dre) {
+  return bsl::Cadena (esq) + dre;
+}
+
+bsl::Cadena bsl::operator-(const char * esq, const bsl::Cadena & dre) {
+  return bsl::Cadena (esq) - dre;
+}
+
+bool bsl::operator==(const char * esq, const bsl::Cadena & dre) {
+  return (strcmp(esq, dre.cad) == 0);
+}
+
+bool bsl::operator!=(const char * esq, const bsl::Cadena & dre) {
+  return (strcmp(esq, dre.cad) != 0);
+}
+
+bool bsl::operator<(const char * esq, const bsl::Cadena & dre) {
+  return (strcmp(esq, dre.cad) < 0);
+}
+
+bool bsl::operator<=(const char * esq, const bsl::Cadena & dre) {
+  return (strcmp(esq, dre.cad) <= 0);
+}
+
+bool bsl::operator>(const char * esq, const bsl::Cadena & dre) {
+  return (strcmp(esq, dre.cad) > 0);
+}
+
+bool bsl::operator>=(const char * esq, const bsl::Cadena & dre) {
+  return (strcmp(esq, dre.cad) >= 0);
+}
+
+std::ostream & bsl::operator<<(std::ostream & eix, const bsl::Cadena & s) {
+  for (unsigned int i = 0; i < strlen(s.cad); i++)
+    eix << s.cad[i];
+  return eix;
+}
+
+std::istream & bsl::operator>>(std::istream & ent, bsl::Cadena & s) {
+  char * cadent = new char[INT_MAX];
+  ent.getline(cadent, INT_MAX);
+  s = cadent;
+  delete [] cadent;
+  return ent;
+}
+
+#endif

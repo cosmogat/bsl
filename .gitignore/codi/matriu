@@ -1,0 +1,208 @@
+// -*- c++ -*-
+// 01-01-2015
+// billy
+// matriu
+#ifndef _BSL_MATRIU_
+#define _BSL_MATRIU_
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+
+namespace bsl {
+  template <class TBM> class Matriu;
+
+  template <class TBM> class Matriu {
+  private:
+    int tam_fil;
+    int tam_col;
+    TBM ** mat;
+    void print(std::ostream & eix) const;
+  public:
+    Matriu(int fil = 1, int col = 0, TBM val = TBM(0));
+    Matriu(const Matriu <TBM> & orig);
+    ~Matriu();
+    int rows() const;
+    int columns() const;
+    void resize(int fil, int col);
+    void resize(int fil, int col, TBM val);
+    void addRow();
+    void addRow(TBM val);
+    void addRow(std::vector <TBM> val);
+    void addColumn();
+    void addColumn(TBM val);
+    void addColumn(std::vector <TBM> val);
+    TBM ** c_mat() const;
+    std::vector<std::vector<TBM> > cpp_vecvec() const;
+    Matriu <TBM> & operator=(Matriu <TBM> & orig);
+    bool operator!=(Matriu <TBM> & dre) const;
+    const TBM & operator()(int i, int j) const;
+    TBM & operator()(int i, int j);
+    template <class TBM1> friend std::ostream & operator<< (std::ostream & eix, const Matriu <TBM1> & m);
+  };
+
+  template <class TBM> std::ostream & operator<< (std::ostream & eix, const Matriu <TBM> & m);
+}
+
+template <class TBM> void bsl::Matriu<TBM>::print(std::ostream & eix) const {
+  for (int i = 0; i < tam_fil; i++) {
+    eix << "[";
+    for (int j = 0; j < (tam_col - 1); j++)
+      eix << mat[i][j] << " ";
+    eix << mat[i][tam_col - 1] << "]" << std::endl;
+  }
+}
+
+template <class TBM> bsl::Matriu<TBM>::Matriu(int fil, int col, TBM val) {
+  int i, j;
+  tam_fil = fil;
+  tam_col = col;
+  mat = (TBM **) malloc(tam_fil * sizeof(TBM *));
+  for (i = 0; i < fil; i++)
+    mat[i] = (TBM *) malloc(tam_col * sizeof(TBM));
+  for (i = 0; i < fil; i++)
+    for (j = 0; j < col; j++)
+      mat[i][j] = val;
+}
+
+template <class TBM> bsl::Matriu<TBM>::Matriu(const bsl::Matriu<TBM> &orig) {
+  operator=(orig);
+}
+
+template <class TBM> bsl::Matriu<TBM>::~Matriu() {
+  for (int i = 0; i < tam_fil; i++)
+    free(mat[i]);
+  free(mat);
+}
+
+template <class TBM> int bsl::Matriu<TBM>::rows() const {
+  return tam_fil;
+}
+
+template <class TBM> int bsl::Matriu<TBM>::columns() const {
+  return tam_col;
+}
+
+template <class TBM> void bsl::Matriu<TBM>::resize(int fil, int col) {
+  resize(fil, col, TBM(0));
+}
+
+template <class TBM> void bsl::Matriu<TBM>::resize(int fil, int col, TBM val) {
+  if ((tam_fil != fil) or (tam_col != col)) {
+    bsl::Matriu<TBM> aux(fil, col, val);
+    int max_i = tam_fil < fil ? tam_fil : fil;
+    int max_j = tam_col < col ? tam_col : col;
+    for (int i = 0; i < max_i; i++)
+      for (int j = 0; j < max_j; j++)
+	aux.mat[i][j] = mat[i][j];
+    *this = aux;
+  }
+}
+
+template <class TBM> void bsl::Matriu<TBM>::addRow() {
+  mat = (TBM **) realloc(mat, (++tam_fil * sizeof(TBM *)));
+  for (int i = 0; i < tam_fil; i++)
+    mat[i] = (TBM *) realloc(mat[i], (tam_col * sizeof(TBM))); 
+}
+
+template <class TBM> void bsl::Matriu<TBM>::addRow(TBM val) {
+  addRow();
+  for (int i = 0; i < tam_col; i++)
+    mat[tam_fil - 1][i] = val;
+}
+
+template <class TBM> void bsl::Matriu<TBM>::addRow(std::vector <TBM> val) {
+  if (tam_col != (int) val.size()) {
+    std::cerr << "Tamany de vector i de columnes distint." << std::endl;
+    exit(-1);
+  }
+  addRow();
+  for (int i = 0; i < tam_col; i++)
+    mat[tam_fil - 1][i] = val[i];
+}
+
+template <class TBM> void bsl::Matriu<TBM>::addColumn() {
+  tam_col++;
+  for (int i = 0; i < tam_fil; i++)
+    mat[i] = (TBM *) realloc(mat[i], (tam_col * sizeof(TBM)));
+}
+
+template <class TBM> void bsl::Matriu<TBM>::addColumn(TBM val) {
+  addColumn();
+  for (int i = 0; i < tam_fil; i++)
+    mat[i][tam_col - 1] = val;
+}
+
+template <class TBM> void bsl::Matriu<TBM>::addColumn(std::vector <TBM> val) {
+  if (tam_fil != (int) val.size()) {
+    std::cerr << "Tamany de vector i de files distint." << std::endl;
+    exit(-1);
+  }
+  addColumn();
+  for (int i = 0; i < tam_fil; i++)
+    mat[i][tam_col - 1] = val[i];
+}
+
+template <class TBM> TBM ** bsl::Matriu<TBM>::c_mat() const {
+  return mat;
+} 
+
+template <class TBM> std::vector<std::vector<TBM> > bsl::Matriu<TBM>::cpp_vecvec() const {
+  std::vector<std::vector<TBM> > ret;
+  for (int i = 0; i < tam_fil; i++) {
+    std::vector<TBM> aux;
+    for (int j = 0; j < tam_col; j++)
+      aux.push_back(mat[i][j]);
+    ret.push_back(aux);
+  }
+  return ret;
+}
+
+template <class TBM> bsl::Matriu<TBM> & bsl::Matriu<TBM>::operator=(bsl::Matriu<TBM> & orig) {
+  int i, j;
+  if (this != &orig) {
+    tam_fil = orig.tam_fil;
+    tam_col = orig.tam_col;
+    mat = (TBM **) malloc(tam_fil * sizeof(TBM *));
+    for (i = 0; i < tam_fil; i++)
+      mat[i] = (TBM *) malloc(tam_col * sizeof(TBM));
+    for (i = 0; i < tam_fil; i++)
+      for (j = 0; j < tam_col; j++)
+	mat[i][j] = orig.mat[i][j];
+  }
+  return (*this);
+}
+
+template <class TBM> bool bsl::Matriu<TBM>::operator!=(bsl::Matriu<TBM> & dre) const {
+  if (this == &dre)
+    return false;
+  if ((tam_fil != dre.tam_fil) or (tam_col != dre.tam_col))
+    return true;
+  for (int i = 0; i < tam_fil; i++)
+    for (int j = 0; j < tam_col; j++)
+      if (mat[i][j] != dre.mat[i][j])
+	return true;
+  return false;
+}
+
+template <class TBM> const TBM & bsl::Matriu<TBM>::operator()(int i, int j) const {
+  if ((i >= tam_fil) or (i < 0) or (j >= tam_col) or (j < 0)) {
+    std::cerr << "Error en els index de la matriu" << std::endl;
+    exit(-1);
+  }
+  return mat[i][j];
+}
+
+template <class TBM> TBM & bsl::Matriu<TBM>::operator()(int i, int j) {
+  if ((i >= tam_fil) or (i < 0) or (j >= tam_col) or (j < 0)) {
+    std::cerr << "Error en els index de la matriu" << std::endl;
+    exit(-1);
+  }
+  return mat[i][j];
+}
+
+template <class TBM> std::ostream & bsl::operator<< (std::ostream & eix, const bsl::Matriu<TBM> & m) {
+  m.print(eix);
+  return eix;
+}
+
+#endif

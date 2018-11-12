@@ -1,0 +1,185 @@
+// -*-c++-*-
+// 01-01-2015
+// billy
+// pila
+#ifndef _BSL_PILA_
+#define _BSL_PILA_
+#include <iostream>
+#include <stack>
+#include <cstdlib>
+
+namespace bsl {
+  template <class TBP> class Pila;
+
+  template <class TBP> class Pila {
+  private:
+    struct Node {
+      TBP elem;
+      Node * seg;
+      Node(const TBP & dada = TBP(), Node * ptr = 0) : elem(dada), seg(ptr) {}
+    };
+    typedef Node * Link;
+    Link dalt;
+    void pushSorted(const TBP & el);
+    void Print(std::ostream & eix) const;
+  public:
+    Pila();
+    Pila(const Pila <TBP> & orig);
+    ~Pila();
+    Pila<TBP> & operator=(const Pila <TBP> & orig);
+    bool empty() const;
+    const TBP & top() const;
+    void push(const TBP & el);
+    void pop();
+    void clear();
+    int size() const;
+    void sort();
+    std::stack <TBP> stack_cpp() const;
+    template <class TBP1> friend std::ostream & operator<<(std::ostream & eix, const Pila <TBP1> & p);
+  };
+
+  template <class TBP> std::ostream & operator<<(std::ostream & eix, const Pila <TBP> & p);
+}
+
+template <class TBP> void bsl::Pila<TBP>::pushSorted(const TBP & el) {
+  Link aux = dalt;
+  if (aux == NULL) {
+    dalt = new Node(el, NULL);
+  }
+  else if (el < (aux->elem))
+    dalt = new Node(el, dalt);
+  else {
+    while ((aux->seg != NULL) && (el >= (aux->seg->elem))) // primer la comprobacio del NULL per a que no done violacio de segment
+      aux = aux->seg;
+    aux->seg = new Node(el, aux->seg);
+  }
+}
+
+template <class TBP> void bsl::Pila<TBP>::Print(std::ostream & eix) const {
+  bsl::Pila<TBP>::Link aux = dalt;
+  eix << "[";
+  if (aux != NULL) {
+    eix << aux->elem;
+    if (aux->seg != NULL)
+      eix << "| ";
+    aux = aux->seg;
+  }
+  while (aux != NULL) {
+    eix << aux->elem;
+    if (aux->seg != NULL)
+      eix << ", ";
+    aux = aux->seg;
+  }
+  eix << "]";
+}
+
+template <class TBP> bsl::Pila<TBP>::Pila() {
+  dalt = 0;
+}
+
+template <class TBP> bsl::Pila<TBP>::Pila (const Pila <TBP> & orig) {
+  dalt = NULL; // per a que l'operator+ cree una copia
+  operator=(orig);
+}
+
+template <class TBP> bsl::Pila<TBP>::~Pila() {
+  clear();
+}
+
+template <class TBP> bsl::Pila<TBP> & bsl::Pila<TBP>::operator=(const Pila <TBP> & orig) {
+  if (this != & orig){ // evitar casos d'autoasignacio
+    clear();
+    if (orig.empty())
+      dalt = NULL;
+    else {
+      dalt = new Node (orig.top());
+      Link ptr = dalt;
+      Link origPtr = orig.dalt->seg;
+      while (origPtr != NULL){
+	ptr->seg = new Node (origPtr->elem);
+	origPtr = origPtr->seg;
+	ptr = ptr->seg;
+      }
+    }
+  }
+  return *this;
+}
+
+template <class TBP> bool bsl::Pila<TBP>::empty() const {
+  return (dalt == NULL);
+}
+
+template <class TBP> const TBP & bsl::Pila<TBP>::top() const {
+  if (!empty())
+    return dalt->elem;
+  else {
+    std::cerr << "Pila buida. Operacio no valida" << std::endl;
+    exit(-1);
+  }
+}
+
+template <class TBP> void bsl::Pila<TBP>::push(const TBP & el) {
+  dalt = new Node(el, dalt);
+}
+
+template <class TBP> void bsl::Pila<TBP>::pop() {
+  if (!empty()){
+    Link p = dalt;
+    dalt = dalt->seg;
+    delete p;
+  }
+  else {
+    std::cerr << "Pila buida: Operacio no valida" << std::endl;
+    exit(-1);
+  }
+}
+
+template <class TBP> void bsl::Pila<TBP>::clear() {
+  Link aux;
+  while (dalt != NULL) {
+    aux = dalt->seg;
+    delete dalt;
+    dalt = aux;
+  }
+}
+
+template <class TBP> int bsl::Pila<TBP>::size()const {
+  int tam = 0;
+  Link aux = dalt;
+  while (aux != NULL) {
+    aux = aux->seg;
+    tam++;
+  }
+  return tam;
+}
+
+template <class TBP> void bsl::Pila<TBP>::sort() {
+  Pila <TBP> P;
+  while (!empty()) {
+    P.pushSorted(dalt->elem);
+    pop();
+  }
+  *(this) = P;
+}
+
+template <class TBP> std::stack <TBP> bsl::Pila<TBP>::stack_cpp() const {
+  std::stack <TBP> ret;
+  int tam = size(), i;
+  TBP * vec = new TBP[tam];
+  Link aux = dalt;
+  for (i = (tam - 1); i >= 0; i--) {
+    vec[i] = aux->elem;
+    aux = aux->seg;
+  }
+  for (i = 0; i < tam; i++)
+    ret.push(vec[i]);
+  delete [] vec;
+  return ret;
+}
+
+template <class TBP> std::ostream & bsl::operator<< (std::ostream & eix, const bsl::Pila<TBP> & p) {
+  p.Print(eix);
+  return eix;
+}
+
+#endif

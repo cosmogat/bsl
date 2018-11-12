@@ -1,0 +1,213 @@
+// -*-c++-*-
+// 22-12-2014
+// billy
+// temps
+#ifndef _BSL_TEMPS_
+#define _BSL_TEMPS_
+#include <iostream>
+#include <cstdlib>
+#include <cmath>
+#include <sys/time.h>
+
+typedef unsigned long long int temps_t;
+
+namespace bsl {
+  class Temps {
+  private:
+    temps_t miliseg;
+    void Vore(std::ostream & eix) const;
+  public:
+    Temps(long double t = 0.0);
+    long double seg();
+    Temps & operator=(const Temps & obj);
+    Temps & operator=(const float val);
+    Temps operator+(const Temps & obj) const;
+    Temps operator+(const float val) const;
+    Temps operator-(const Temps & obj) const;
+    Temps operator-(const float val) const;
+    Temps operator*(const float val) const;
+    Temps operator/(const float val) const;
+    Temps & operator+=(const Temps & obj);
+    Temps & operator+=(const float val);
+    Temps & operator-=(const Temps & obj);
+    Temps & operator-=(const float val);
+    Temps & operator*=(const float val);
+    Temps & operator/=(const float val);
+    bool operator==(const Temps & obj) const;
+    bool operator!=(const Temps & obj) const;
+    bool operator<(const Temps & obj) const;
+    bool operator<=(const Temps & obj) const;
+    bool operator>(const Temps & obj) const;
+    bool operator>=(const Temps & obj) const;
+    friend std::ostream & operator<< (std::ostream & eix, const Temps & obj);
+    friend Temps now();
+  };
+
+  std::ostream & operator<< (std::ostream & eix, const Temps & obj);
+  Temps now();
+}
+
+void bsl::Temps::Vore(std::ostream & eix) const{
+  temps_t d, h, m, s, a;
+  temps_t pd, ph, pm, ps, pms;
+ 
+  pms = miliseg % 1000;
+  s = (temps_t) floor(miliseg * 0.001);
+  m = (temps_t) floor(s / 60);
+  h = (temps_t) floor(m / 60);
+  d = (temps_t) floor(h / 24);
+  a = (temps_t) floor(d / 365);
+  ps = s % 60;
+  pm = m % 60;
+  ph = h % 24;
+  pd = d % 365;
+  if (a > 0)
+    eix << a << "a ";
+  if (d > 0) {
+    if (pd < 10)
+      eix << "0";
+    eix << pd << "d ";
+  }
+  if (h > 0) {
+    if (ph < 10)
+      eix << "0";
+    eix << ph << "h ";
+  }
+  if (m > 0) {
+    if (pm < 10)
+      eix << "0";
+    eix << pm << "m ";
+  }
+  eix << ps << ".";
+  if (pms < 100) {
+    eix << "0";
+    if (pms < 10)
+      eix << "0";
+  }
+  eix << pms << "s";
+}
+
+bsl::Temps::Temps(long double t) {
+  if (t != 0.0)
+    miliseg = (temps_t) (t * 1000);
+  else {
+    timeval tv;
+    gettimeofday(&tv, NULL);
+    miliseg = (temps_t)(tv.tv_sec) * 1000 + (temps_t)(tv.tv_usec) * 0.001;
+  }
+}
+
+long double bsl::Temps::seg() {
+  return ((long double) miliseg) * 1000;
+}
+
+bsl::Temps & bsl::Temps::operator=(const bsl::Temps & obj) {
+  miliseg = obj.miliseg;
+  return (*this);
+}
+
+bsl::Temps & bsl::Temps::operator=(const float val) {
+  miliseg = (val * 1000);
+  return (*this);
+}
+
+bsl::Temps bsl::Temps::operator+(const bsl::Temps & obj) const {
+  bsl::Temps ret;
+  ret.miliseg = miliseg + obj.miliseg;
+  return ret;
+}
+
+bsl::Temps bsl::Temps::operator+(const float val) const {
+  bsl::Temps ret;
+  ret.miliseg = miliseg + (val * 1000);
+  return ret;
+}
+
+bsl::Temps bsl::Temps::operator-(const bsl::Temps & obj) const {
+  bsl::Temps ret;
+  ret.miliseg = miliseg - obj.miliseg;
+  return ret;
+}
+
+bsl::Temps bsl::Temps::operator-(const float val) const {
+  bsl::Temps ret;
+  ret.miliseg = miliseg - (val * 1000);
+  return ret;
+}
+
+bsl::Temps bsl::Temps::operator*(const float val) const {
+  bsl::Temps ret;
+  ret.miliseg = miliseg * val;
+  return ret;  
+}
+
+bsl::Temps bsl::Temps::operator/(const float val) const {
+  bsl::Temps ret;
+  ret.miliseg = miliseg / val;
+  return ret;
+}
+
+bsl::Temps & bsl::Temps::operator+=(const bsl::Temps & obj) {
+  miliseg += obj.miliseg;
+  return (*this);
+}
+
+bsl::Temps & bsl::Temps::operator+=(const float val) {
+  miliseg += (val * 1000);
+  return (*this);
+}
+
+bsl::Temps & bsl::Temps::operator-=(const bsl::Temps & obj) {
+  miliseg -= obj.miliseg;
+  return (*this);
+}
+
+bsl::Temps & bsl::Temps::operator-=(const float val) {
+  miliseg -= (val * 1000);
+  return (*this);
+}
+
+bsl::Temps & bsl::Temps::operator*=(const float val) {
+  miliseg *= val;
+  return (*this);
+}
+
+bsl::Temps & bsl::Temps::operator/=(const float val) {
+  miliseg /= val;
+  return (*this);
+}
+
+bool bsl::Temps::operator==(const bsl::Temps & obj) const {
+  return (miliseg == obj.miliseg);
+}
+
+bool bsl::Temps::operator!=(const bsl::Temps & obj) const {
+  return (miliseg != obj.miliseg);
+}
+
+bool bsl::Temps::operator<(const bsl::Temps & obj) const {
+  return (miliseg < obj.miliseg);
+}
+
+bool bsl::Temps::operator<=(const bsl::Temps & obj) const {
+  return (miliseg <= obj.miliseg);
+}
+
+bool bsl::Temps::operator>(const bsl::Temps & obj) const {
+  return (miliseg > obj.miliseg);
+}
+
+bool bsl::Temps::operator>=(const bsl::Temps & obj) const {
+  return (miliseg >= obj.miliseg);
+}
+
+std::ostream & bsl::operator<< (std::ostream & eix, const bsl::Temps & obj) {
+  obj.Vore(eix);
+  return eix;
+}
+
+bsl::Temps bsl::now() {
+  return bsl::Temps();
+}
+
+#endif

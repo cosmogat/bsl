@@ -1,0 +1,148 @@
+// -*-c++-*-
+// 01-01-2015
+// billy
+// cua
+#ifndef _BSL_CUA_
+#define _BSL_CUA_
+#include <iostream>
+#include <queue>
+#include <cstdlib>
+
+namespace bsl {
+  template <class TBC> class Cua;
+
+  template <class TBC> class Cua {
+  private:
+    struct Node {
+      TBC elem;
+      Node * seg;
+      Node(const TBC & dada = TBC(), Node * ptr = 0) : elem(dada), seg(ptr) {} 
+    };
+    typedef Node * Link; 
+    Link davant, darrere;
+    void print(std::ostream & eix) const;
+  public:
+    Cua();
+    Cua(const Cua <TBC> & orig);
+    ~Cua();
+    Cua<TBC> & operator=(const Cua <TBC> & orig);
+    bool empty() const;
+    const TBC & front() const;
+    void push(const TBC & element);
+    void pop();
+    void clear();
+    std::queue <TBC> queue_cpp() const;
+    template <class TBC1> friend std::ostream & operator<<(std::ostream & eix, const Cua <TBC1> & c);
+  };
+
+  template <class TBC> std::ostream & operator<<(std::ostream & eix, const Cua <TBC> & c);
+}
+
+template <class TBC> void bsl::Cua<TBC>::print(std::ostream & eix) const {
+  Link ptr = davant;
+  eix << "[" ;
+  if (ptr != NULL) {
+    eix << ptr->elem << "| " ;
+    ptr = ptr->seg;
+  }
+  while (ptr != NULL) {
+    eix << ptr->elem;
+    if (ptr->seg != NULL)
+      eix <<  ", " ;
+    ptr = ptr->seg;
+  }
+  eix << "]" ;
+}
+
+template <class TBC> bsl::Cua<TBC>::Cua() : davant(0), darrere(0) {}
+
+template <class TBC> bsl::Cua<TBC>::Cua(const bsl::Cua <TBC> & orig) {
+  davant = darrere = NULL;
+  operator=(orig);
+}
+
+template <class TBC> bsl::Cua<TBC>::~Cua() {
+  clear();
+  davant = darrere = NULL;
+}
+
+template <class TBC> bsl::Cua <TBC> & bsl::Cua<TBC>::operator=(const bsl::Cua <TBC> & orig) {
+  if (this != &orig) {
+    clear();
+    if( orig.davant == NULL )
+      davant = darrere = NULL;
+    else{
+      davant = new Node(orig.front()) ;
+      darrere = davant;
+      Link origPtr = orig.davant->seg;
+      while (origPtr != NULL){
+	darrere->seg = new Node(origPtr->elem) ;
+	origPtr = origPtr->seg;
+	darrere = darrere->seg;
+      }
+    }
+  }
+  return *this;
+}
+
+template <class TBC> bool bsl::Cua<TBC>::empty() const {
+  return (davant == NULL) ;
+}
+
+template <class TBC> const TBC & bsl::Cua<TBC>::front() const {
+  if (!empty())
+    return davant->elem;
+  else {
+    std::cerr << "Cua buida. Operacio front no valida" << std::endl ;
+    exit(-1);
+  }
+}
+
+template <class TBC> void bsl::Cua<TBC>::push(const TBC & element) {
+  if (empty())
+    davant = darrere = new Node(element);
+  else {
+    Link p = new Node(element);
+    darrere->seg = p;
+    darrere = p;
+  }
+}
+
+
+template <class TBC> void bsl::Cua<TBC>::pop() {
+  if (!empty()) {
+    Link p = davant ;
+    davant = davant->seg;
+    delete p;
+  }
+  else {
+    std::cerr << "Cua buida. Operacio pop no valida" << std::endl ;
+    exit(-1);
+  }
+}
+
+template <class TBC> void bsl::Cua<TBC>::clear() {
+  Link ptr = davant, next;
+  while (ptr != NULL) {
+    next = ptr->seg;
+    delete ptr;
+    ptr = next;
+    }
+}
+
+template <class TBC> std::queue <TBC> bsl::Cua<TBC>::queue_cpp() const {
+  std::queue <TBC> ret;
+  Link ptr = davant;
+  while (ptr != NULL) {
+    ret.push(ptr->elem);
+    ptr = ptr->seg;
+  }
+  return ret;
+}
+
+template <class TBC> std::ostream & bsl::operator<<(std::ostream & eix, const bsl::Cua <TBC> & c) {
+  c.print(eix);
+  return eix;
+}
+
+#endif

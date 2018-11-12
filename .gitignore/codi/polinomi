@@ -1,0 +1,797 @@
+// -*- c++ -*-
+// 03-01-2015
+// billy
+// polinomi
+#ifndef _BSL_POLINOMI_
+#define _BSL_POLINOMI_
+#include <iostream>
+#include <vector>
+#include <bsl/complex>
+#include <bsl/cadena>
+#include <cstdlib>
+
+#undef MAX_CHAR_POL
+#define MAX_CHAR_POL 500
+
+namespace bsl {
+  template <class TBP> class Polinomi;
+
+  template <class TBP> class Polinomi {
+  private:
+    TBP * coef;
+    int grau;
+    void init(TBP val = TBP(0));
+    void deleteZeros();
+    void print(std::ostream & eix) const;
+    void scan(std::istream & ent);
+    std::vector<Polinomi<TBP> > divide(Polinomi<TBP> divisor) const;
+  public:
+    Polinomi(TBP val = TBP(0));
+    Polinomi(const Polinomi<TBP> & pol);
+    Polinomi(const char * pol);
+    ~Polinomi();
+    void clear();
+    int grade();
+    Polinomi<TBP> derivate() const;
+    Polinomi<TBP> integrate() const;
+    TBP derivate(TBP val) const;
+    TBP integrate(TBP min, TBP max) const;
+    TBP newton_raphson(TBP ini, int iter_max = 10) const;
+    Complex<TBP> newton_raphson(Complex<TBP> ini, int iter_max = 10) const;
+    std::vector<Complex<TBP> > durand_kerner(Complex<TBP> ini, int iter_max = 10) const;
+    std::vector<Complex<TBP> > roots() const;
+    std::vector<TBP> realroots() const;
+    std::vector<TBP> min() const;
+    std::vector<TBP> max() const;
+    std::vector<TBP> saddle() const;
+    Polinomi<TBP> & operator=(const TBP & val);
+    Polinomi<TBP> & operator=(const Polinomi<TBP> & pol);
+    Polinomi<TBP> & operator=(const char * pol);
+    Polinomi<TBP> & operator+= (const TBP & val);
+    Polinomi<TBP> & operator+= (const Polinomi<TBP> & pol);
+    Polinomi<TBP> & operator-= (const TBP & val);
+    Polinomi<TBP> & operator-= (const Polinomi<TBP> & pol);
+    Polinomi<TBP> & operator*= (const TBP & val);
+    Polinomi<TBP> & operator*= (const Polinomi<TBP> & pol);
+    Polinomi<TBP> & operator/= (const TBP & val);
+    Polinomi<TBP> & operator/= (const Polinomi<TBP> & pol);
+    Polinomi<TBP> operator+(const TBP & val) const;
+    Polinomi<TBP> operator+(const Polinomi<TBP> & pol) const;
+    Polinomi<TBP> operator-(const TBP & val) const;
+    Polinomi<TBP> operator-(const Polinomi<TBP> & pol) const;
+    Polinomi<TBP> operator*(const TBP & val) const;
+    Polinomi<TBP> operator*(const Polinomi<TBP> & pol) const;
+    Polinomi<TBP> operator/(const TBP & val) const;
+    Polinomi<TBP> operator/(const Polinomi<TBP> & pol) const;
+    Polinomi<TBP> operator%(const TBP & val) const;
+    Polinomi<TBP> operator%(const Polinomi<TBP> & pol) const;
+    bool operator==(const TBP & val) const;
+    bool operator==(const Polinomi<TBP> & pol) const;
+    bool operator!=(const TBP & val) const;
+    bool operator!=(const Polinomi & pol) const;
+    bool operator<(const TBP & val) const;
+    bool operator<(const Polinomi & pol) const;
+    bool operator<=(const TBP & val) const;
+    bool operator<=(const Polinomi & pol) const;
+    bool operator>(const TBP & val) const;
+    bool operator>(const Polinomi & pol) const;
+    bool operator>=(const TBP & val) const;
+    bool operator>=(const Polinomi & pol) const;
+    const TBP & operator[](int i) const;
+    TBP & operator[](int i);
+    TBP operator()(const TBP & x) const;
+    Complex<TBP> operator()(const Complex<TBP> comp) const;
+    template <class TBP1> friend Polinomi<TBP1> operator+(const TBP1 & esq, const Polinomi <TBP1> & dre);
+    template <class TBP1> friend Polinomi<TBP1> operator-(const TBP1 & esq, const Polinomi <TBP1> & dre);
+    template <class TBP1> friend Polinomi<TBP1> operator*(const TBP1 & esq, const Polinomi <TBP1> & dre);
+    template <class TBP1> friend Polinomi<TBP1> operator/(const TBP1 & esq, const Polinomi <TBP1> & dre);
+    template <class TBP1> friend Polinomi<TBP1> operator%(const TBP1 & esq, const Polinomi <TBP1> & dre);
+    template <class TBP1> friend Polinomi<TBP1> operator+(const Polinomi <TBP1> & pol);
+    template <class TBP1> friend Polinomi<TBP1> operator-(const Polinomi <TBP1> & pol);
+    template <class TBP1> friend bool operator==(const TBP1 & esq, const Polinomi <TBP1> & dre);
+    template <class TBP1> friend bool operator!=(const TBP1 & esq, const Polinomi <TBP1> & dre);
+    template <class TBP1> friend bool operator<(const TBP1 & esq, const Polinomi <TBP1> & dre);
+    template <class TBP1> friend bool operator<=(const TBP1 & esq, const Polinomi <TBP1> & dre);
+    template <class TBP1> friend bool operator>(const TBP1 & esq, const Polinomi <TBP1> & dre);
+    template <class TBP1> friend bool operator>=(const TBP1 & esq, const Polinomi <TBP1> & dre);
+    template <class TBP1> friend std::ostream & operator<<(std::ostream & eix, const Polinomi <TBP1> & pol);
+    template <class TBP1> friend std::istream & operator>>(std::istream & ent, Polinomi <TBP1> & pol);
+  };
+
+  template <class TBP> Polinomi<TBP> operator+(const TBP & esq, const Polinomi<TBP> & dre);
+  template <class TBP> Polinomi<TBP> operator-(const TBP & esq, const Polinomi<TBP> & dre);
+  template <class TBP> Polinomi<TBP> operator*(const TBP & esq, const Polinomi<TBP> & dre);
+  template <class TBP> Polinomi<TBP> operator/(const TBP & esq, const Polinomi<TBP> & dre);
+  template <class TBP> Polinomi<TBP> operator%(const TBP & esq, const Polinomi<TBP> & dre);
+  template <class TBP> Polinomi<TBP> operator+(const Polinomi<TBP> & pol);
+  template <class TBP> Polinomi<TBP> operator-(const Polinomi<TBP> & pol);
+  template <class TBP> bool operator==(const TBP & esq, const Polinomi<TBP> & dre);
+  template <class TBP> bool operator!=(const TBP & esq, const Polinomi<TBP> & dre);
+  template <class TBP> bool operator<(const TBP & esq, const Polinomi<TBP> & dre);
+  template <class TBP> bool operator<=(const TBP & esq, const Polinomi<TBP> & dre);
+  template <class TBP> bool operator>(const TBP & esq, const Polinomi<TBP> & dre);
+  template <class TBP> bool operator>=(const TBP & esq, const Polinomi<TBP> & dre);
+  template <class TBP> std::ostream & operator<<(std::ostream & eix, const Polinomi<TBP> & pol);
+  template <class TBP> std::istream & operator>>(std::istream & ent, Polinomi<TBP> & pol);
+}
+
+template <class TBP> void bsl::Polinomi<TBP>::init(TBP val) {
+  grau = 0;
+  coef = (TBP *) malloc(sizeof(TBP));
+  coef[0] = val;
+}
+
+template <class TBP> void bsl::Polinomi<TBP>::deleteZeros() {
+  int i = grau;
+  while ((coef[i] == TBP(0)) and (i > 0))
+    i--;
+  if (i != grau) {
+    grau = i;
+    coef = (TBP *) realloc(coef, (grau + 1) * sizeof(TBP));
+  }
+}
+
+template <class TBP> void bsl::Polinomi<TBP>::print(std::ostream & eix) const {
+  bool zero = true;
+  for (int i = grau; i > 1; i--) {
+    if (coef[i] < TBP(0)) {
+      if (coef[i] != TBP(-1))
+	eix << (zero ? "" : " ") << "- " << -coef[i] << "x^" << i;
+      else
+	eix << (zero ? "" : " ") << "- x^" << i;
+      zero = false;
+    }
+    else if (TBP(0) < coef[i]) {
+      if (coef[i] != TBP(1))
+	eix << (zero ? "" : " ") << "+ " << coef[i] << "x^" << i;
+      else
+	eix << (zero ? "" : " ") << "+ x^" << i;
+      zero = false;
+    }
+  }
+  if (grau > 0) {
+    if (coef[1] < TBP(0)) {
+      if (coef[1] != TBP(-1))
+	eix << (zero ? "" : " ") << "- " << -coef[1] << "x";
+      else
+	eix << (zero ? "" : " ") << "- x";
+      zero = false;
+    }
+    else if (TBP(0) < coef[1]) {
+      if (coef[1] != TBP(1))
+	eix << (zero ? "" : " ") << "+ " << coef[1] << "x";
+      else
+	eix << (zero ? "" : " ") << "+ x";
+      zero = false;
+    }
+  }
+  if (coef[0] < TBP(0))
+    eix << (zero ? "" : " ") << "- " << -coef[0];
+  else if (TBP(0) < coef[0])
+    eix << (zero ? "" : " ") << "+ " << coef[0];
+  else if (zero)
+    eix << TBP(0);
+}
+
+template <class TBP> void bsl::Polinomi<TBP>::scan(std::istream & ent) {
+  char * pol_ent = new char[MAX_CHAR_POL];
+  ent.getline(pol_ent, MAX_CHAR_POL);
+  (*this) = pol_ent;
+  delete [] pol_ent;
+}
+
+template <class TBP> std::vector<bsl::Polinomi<TBP> > bsl::Polinomi<TBP>::divide(bsl::Polinomi<TBP> divisor) const {
+  bsl::Polinomi<TBP> dividend = (*this);
+  bsl::Polinomi<TBP> quocient;
+  bsl::Polinomi<TBP> aux;
+  std::vector<bsl::Polinomi<TBP> > ret(2);
+  if (dividend == divisor) {
+    quocient[0] = 1;
+    dividend.clear();
+    dividend[0] = 0;
+  }
+  if (divisor.grau == 0) {
+    if (divisor.coef[0] == TBP(0)) {
+      std::cerr << "ERROR: Divisio entre zero" << std::endl;
+      exit(-1);
+    }
+    TBP inv = TBP(1) / divisor.coef[0];
+    quocient = dividend;
+    for (int i = 0; i <= quocient.grau; i++)
+      quocient.coef[i] *= inv;
+    quocient.deleteZeros(); 
+    dividend.clear();
+    dividend[0] = 0;
+  }
+  else if (dividend.grau >= divisor.grau) {
+    quocient.grau = dividend.grau - divisor.grau;
+    quocient.coef = (TBP *) malloc((quocient.grau + 1) * sizeof(TBP));
+    for (int i = 0; i <= quocient.grau; i++)
+      quocient.coef[i] = TBP(0);
+    int min = divisor.grau == 0 ? 1 : divisor.grau;
+    while (dividend.grau >= min) {
+      aux[dividend.grau - divisor.grau] = dividend.coef[dividend.grau] / divisor.coef[divisor.grau];
+      dividend = dividend - (aux * divisor);
+      quocient = quocient + aux;
+      aux.clear();
+    }
+  }
+  else
+    quocient[0] = 0;
+  quocient.deleteZeros();
+  dividend.deleteZeros();
+  ret[0] = quocient;
+  ret[1] = dividend;
+  return ret;
+}
+
+template <class TBP> bsl::Polinomi<TBP>::Polinomi(TBP val) {
+  operator=(val);
+}
+
+template <class TBP> bsl::Polinomi<TBP>::Polinomi(const bsl::Polinomi<TBP> & pol) {
+  operator=(pol);
+}
+
+template <class TBP> bsl::Polinomi<TBP>::Polinomi(const char * pol) {
+  operator=(pol);
+}
+
+template <class TBP> bsl::Polinomi<TBP>::~Polinomi() {
+  free(coef);
+}
+
+template <class TBP> void bsl::Polinomi<TBP>::clear() {
+  init();
+}
+
+template <class TBP> int bsl::Polinomi<TBP>::grade() {
+  if (coef[grau] == TBP(0))
+    deleteZeros();
+  return grau;
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::Polinomi<TBP>::derivate() const {
+  bsl::Polinomi<TBP> ret = (*this);
+  for (int i = 0; i < ret.grau; i++)
+    ret.coef[i] = ret.coef[i + 1] * TBP(i + 1);
+  ret.coef[grau] = TBP(0);
+  ret.deleteZeros();
+  return ret;
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::Polinomi<TBP>::integrate() const {
+  bsl::Polinomi<TBP> ret = (*this);
+  ret[ret.grau + 1] = 1;
+  for (int i = 1; i <= ret.grau; i++)
+    ret.coef[i] = coef[i - 1] / TBP(i);
+  ret.coef[0] = TBP(0);
+  return ret;
+}
+
+template <class TBP> TBP bsl::Polinomi<TBP>::derivate(TBP val) const {
+  return derivate()(val);
+}
+
+template <class TBP> TBP bsl::Polinomi<TBP>::integrate(TBP min, TBP max) const {
+  if (min == max)
+    return TBP(0);
+  bsl::Polinomi<TBP> integral = integrate();
+  return (integral(max) - integral(min));
+}
+
+template <class TBP> TBP bsl::Polinomi<TBP>::newton_raphson(TBP ini, int iter_max) const {
+  bsl::Polinomi<TBP> func = (*this);
+  bsl::Polinomi<TBP> deri = func.derivate();
+  TBP ret = ini;
+  int iter = 0;
+  while (iter < iter_max) {
+    ret = ret - (func(ret) / deri(ret));
+    iter++;
+  }
+  return ret;
+}
+
+template <class TBP> bsl::Complex<TBP> bsl::Polinomi<TBP>::newton_raphson(bsl::Complex<TBP> ini, int iter_max) const {
+  bsl::Polinomi<TBP> func = (*this);
+  bsl::Polinomi<TBP> deri = func.derivate();
+  Complex <TBP> ret = ini;
+  int iter = 0;
+  while (iter < iter_max) {
+    ret = ret - (func(ret) / deri(ret));
+    iter++;
+  }
+  return ret;
+}
+
+template <class TBP> std::vector<bsl::Complex<TBP> > bsl::Polinomi<TBP>::durand_kerner(Complex <TBP> ini, int iter_max) const {
+  bsl::Polinomi<TBP> pol = (*this);
+  pol.deleteZeros();
+  std::vector<bsl::Complex<TBP> > ret(pol.grau);
+  if (pol.grau > 0) {
+    Complex <TBP> pot(TBP(1), TBP(0));
+    ret[0] = pot;
+    for (int i = 1; i < pol.grau; i++) {
+      pot = pot * ini;
+      ret[i] = pot;
+    }
+    for (int iter = 0; iter < iter_max; iter++) {
+      std::vector<bsl::Complex<TBP> > ant = ret;
+      for (int i = 0; i < pol.grau; i++) {
+	Complex <TBP> val = pol(ant[i]);
+	Complex <TBP> den = Complex <TBP> (1);
+	for (int j = 0; j < i; j++)
+	  den = den * (ant[i] - ant[j]);
+	for (int j = i + 1; j < pol.grau; j++)
+	  den = den * (ant[i] - ant[j]);
+	  ret[i] = ant[i] - (val / den);
+	if ((ant[i] - ret[i]) == Complex <TBP> (0, 0))
+	  ret[i] = ant[i];
+      }
+    }
+  }
+  return ret;
+}
+
+template <class TBP> std::vector<bsl::Complex<TBP> > bsl::Polinomi<TBP>::roots() const {
+  bsl::Polinomi<TBP> pol = (*this);
+  pol.deleteZeros();
+  pol /= pol.coef[pol.grau];
+  std::vector<bsl::Complex<TBP> > ret;
+  if (pol.grau == 2) {
+    Complex <TBP> a(pol.coef[2]), b(pol.coef[1]), c(pol.coef[0]);
+    Complex <TBP> arrel = sqrt((b * b) - (TBP(4) * a * c));
+    ret.push_back(TBP(0.5) * (-b + arrel));
+    ret.push_back(TBP(0.5) * (-b - arrel));
+  }
+  else if (pol.grau == 1)
+    ret.push_back(-pol.coef[0]);
+  else {
+    ret = pol.durand_kerner(bsl::Complex<TBP> (TBP(0.4), TBP(0.9)), 10);
+    for (int i = 0; i < pol.grau; i++) {
+      if (real(ret[i]) != TBP(int(real(ret[i]))))
+	ret[i] = pol.newton_raphson(ret[i], 20);
+      if ((std::abs(real(ret[i])) / std::abs(imag(ret[i]))) > TBP(1e6))
+	ret[i].imag(TBP(0));
+      else if ((std::abs(imag(ret[i])) / std::abs(real(ret[i]))) > TBP(1e6))
+	ret[i].real(TBP(0));
+      else if ((pol.coef[0] == TBP(0)) and (std::abs(real(ret[i])) < TBP (1e-6)) and (std::abs(imag(ret[i])) < TBP (1e-6)))
+	ret[i] = bsl::Complex<TBP> (0, 0);
+    }
+  }
+  return ret;
+}
+
+template <class TBP> std::vector<TBP> bsl::Polinomi<TBP>::realroots() const {
+  std::vector<bsl::Complex<TBP> > zeros = roots();
+  std::vector<TBP> zerosReals;
+  for (unsigned int i = 0; i < zeros.size(); i++)
+    if (imag(zeros[i]) == TBP(0))
+      zerosReals.push_back(real(zeros[i]));
+  return zerosReals;
+}
+
+template <class TBP> std::vector<TBP> bsl::Polinomi<TBP>::min() const {
+  bsl::Polinomi<TBP> der1 = derivate();
+  bsl::Polinomi<TBP> der2 = der1.derivate();
+  std::vector<TBP> zerosDer = der1.realroots();
+  std::vector<TBP> ret;
+  for (unsigned int i = 0; i < zerosDer.size(); i++)
+    if (der2(zerosDer[i]) > TBP(0))
+      ret.push_back(zerosDer[i]);
+  return ret;
+}
+
+template <class TBP> std::vector<TBP> bsl::Polinomi<TBP>::max() const {
+  bsl::Polinomi<TBP> der1 = derivate();
+  bsl::Polinomi<TBP> der2 = der1.derivate();
+  std::vector<TBP> zerosDer = der1.realroots();
+  std::vector<TBP> ret;
+  for (unsigned int i = 0; i < zerosDer.size(); i++)
+    if (der2(zerosDer[i]) < TBP(0))
+      ret.push_back(zerosDer[i]);
+  return ret;
+}
+
+template <class TBP> std::vector<TBP> bsl::Polinomi<TBP>::saddle() const {
+  bsl::Polinomi<TBP> der1 = derivate();
+  bsl::Polinomi<TBP> der2 = der1.derivate();
+  std::vector<TBP> zerosDer = der1.realroots();
+  std::vector<TBP> ret;
+  for (unsigned int i = 0; i < zerosDer.size(); i++)
+    if (der2(zerosDer[i]) == TBP(0))
+      ret.push_back(zerosDer[i]);
+  return ret;
+}
+
+template <class TBP> bsl::Polinomi<TBP> & bsl::Polinomi<TBP>::operator=(const TBP & val) {
+  init(val);
+  return (*this);
+}
+
+template <class TBP> bsl::Polinomi<TBP> & bsl::Polinomi<TBP>::operator=(const bsl::Polinomi<TBP> & pol) {
+  if (this != &pol) {
+    grau = pol.grau;
+    coef = (TBP *) malloc((grau + 1) * sizeof(TBP));
+    for (int i = 0; i <= pol.grau; i++)
+      coef[i] = pol.coef[i];
+  }
+  deleteZeros();
+  return (*this);
+}
+
+template <class TBP> bsl::Polinomi<TBP> & bsl::Polinomi<TBP>::operator=(const char * pol) {
+  init();
+  bsl::Cadena polinomi(pol);
+  polinomi = polinomi.str_replace(" ", "");
+  std::vector <bsl::Cadena> vec;
+  std::vector <bsl::Cadena> aux0 = polinomi.explode("+");
+  for (unsigned int i = 0; i < aux0.size(); i++) {
+    std::vector <bsl::Cadena> aux1 = aux0[i].explode("-");
+    if (aux1.size() > 1) {
+      vec.push_back(aux1[0]);
+      for (unsigned int j = 1; j < aux1.size(); j++)
+	vec.push_back("-" + aux1[j]);
+    }
+    else
+      vec.push_back(aux0[i]);
+  }
+  for (unsigned int i = 0; i < vec.size(); i++) {
+    bsl::Cadena monomi = vec[i];
+    monomi = monomi.str_replace("^", "");
+    std::vector <bsl::Cadena> coef_grau = monomi.explode("x");
+    if (coef_grau.size() == 2)
+      (*this)[coef_grau[1].empty() ? 1 : coef_grau[1].cad2i()] = coef_grau[0].empty() ? TBP(1) : TBP(coef_grau[0].cad2d()); 
+    else if (coef_grau.size() == 1)
+      (*this)[0] = coef_grau[0].empty() ? TBP(1) : TBP(coef_grau[0].cad2d());
+  }
+  deleteZeros();
+  return (*this);
+}
+
+template <class TBP> bsl::Polinomi<TBP> & bsl::Polinomi<TBP>::operator+= (const TBP & val) {
+  coef[0] += val;
+  deleteZeros();
+  return (*this);
+}
+
+template <class TBP> bsl::Polinomi<TBP> & bsl::Polinomi<TBP>::operator+= (const bsl::Polinomi<TBP> & pol) {
+  (*this) = operator+(pol);
+  deleteZeros();
+  return (*this);
+}
+
+template <class TBP> bsl::Polinomi<TBP> & bsl::Polinomi<TBP>::operator-= (const TBP & val) {
+  coef[0] -= val;
+  deleteZeros();
+  return (*this);
+}
+
+template <class TBP> bsl::Polinomi<TBP> & bsl::Polinomi<TBP>::operator-= (const bsl::Polinomi<TBP> & pol) {
+  (*this) = operator-(pol);
+  deleteZeros();
+  return (*this);
+}
+
+template <class TBP> bsl::Polinomi<TBP> & bsl::Polinomi<TBP>::operator*= (const TBP & val) {
+  for (int i = 0; i <= grau; i++)
+    coef[i] *= val;
+  deleteZeros();
+  return (*this);
+}
+
+template <class TBP> bsl::Polinomi<TBP> & bsl::Polinomi<TBP>::operator*= (const bsl::Polinomi<TBP> & pol) {
+  (*this) = operator*(pol);
+  deleteZeros();
+  return (*this);
+}
+
+template <class TBP> bsl::Polinomi<TBP> & bsl::Polinomi<TBP>::operator/= (const TBP & val) {
+  TBP inv = TBP(1) / val;
+  for (int i = 0; i <= grau; i++)
+    coef[i] *= inv;
+  deleteZeros();
+  return (*this);
+}
+
+template <class TBP> bsl::Polinomi<TBP> & bsl::Polinomi<TBP>::operator/= (const bsl::Polinomi<TBP> & pol) {
+  (*this) = operator/(pol);
+  deleteZeros();
+  return (*this);
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::Polinomi<TBP>::operator+(const TBP & val) const {
+  bsl::Polinomi<TBP> ret = (*this); 
+  ret.coef[0] += val;
+  ret.deleteZeros();
+  return ret;
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::Polinomi<TBP>::operator+(const bsl::Polinomi<TBP> & pol) const {
+  bsl::Polinomi<TBP> ret;
+  ret.grau = pol.grau > grau ? pol.grau : grau;
+  ret.coef = (TBP *) malloc((ret.grau + 1) * sizeof(TBP));
+  if (grau <= pol.grau) {
+    for (int i = 0; i <= grau; i++)
+      ret.coef[i] = coef[i] + pol.coef[i];
+    for (int i = grau + 1; i <= pol.grau; i++)
+      ret.coef[i] = pol.coef[i];
+  }
+  else {
+    for (int i = 0; i <= pol.grau; i++)
+      ret.coef[i] = coef[i] + pol.coef[i];
+    for (int i = pol.grau + 1; i <= grau; i++)
+      ret.coef[i] = coef[i];
+  }
+  ret.deleteZeros();
+  return ret;
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::Polinomi<TBP>::operator-(const TBP & val) const {
+  bsl::Polinomi<TBP> ret = (*this); 
+  ret.coef[0] -= val;
+  ret.deleteZeros();
+  return ret;
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::Polinomi<TBP>::operator-(const bsl::Polinomi<TBP> & pol) const {
+  bsl::Polinomi<TBP> ret;
+  ret.grau = pol.grau > grau ? pol.grau : grau;
+  ret.coef = (TBP *) malloc((ret.grau + 1) * sizeof(TBP));
+  if (grau <= pol.grau) {
+    for (int i = 0; i <= grau; i++)
+      ret.coef[i] = coef[i] - pol.coef[i];
+    for (int i = grau + 1; i <= pol.grau; i++)
+      ret.coef[i] = -pol.coef[i];
+  }
+  else {
+    for (int i = 0; i <= pol.grau; i++)
+      ret.coef[i] = coef[i] - pol.coef[i];
+    for (int i = pol.grau + 1; i <= grau; i++)
+      ret.coef[i] = coef[i];
+  }
+  ret.deleteZeros();
+  return ret;
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::Polinomi<TBP>::operator*(const TBP & val) const {
+  bsl::Polinomi<TBP> ret = (*this);
+  for (int i = 0; i <= grau; i++)
+    ret.coef[i] *= val;
+  ret.deleteZeros();
+  return ret;
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::Polinomi<TBP>::operator*(const bsl::Polinomi<TBP> & pol) const {
+  bsl::Polinomi<TBP> ret;
+  int i, j;
+  ret.grau = pol.grau + grau;
+  ret.coef = (TBP *) malloc((ret.grau + 1) * sizeof(TBP));
+  for (i = 0; i <= ret.grau; i++)
+    ret.coef[i] = TBP(0);
+  for (i = 0; i <= grau; i++)
+    if (coef[i] != TBP(0))
+      for (j = 0; j <= pol.grau; j++)
+	if (pol.coef[j] != TBP(0))
+	  ret.coef[i + j] += coef[i] * pol.coef[j];
+  ret.deleteZeros();
+  return ret;
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::Polinomi<TBP>::operator/(const TBP & val) const {
+  bsl::Polinomi<TBP> ret = (*this);
+  TBP inv = TBP(1) / val;
+  for (int i = 0; i <= grau; i++)
+    ret.coef[i] *= inv;
+  ret.deleteZeros();
+  return ret;
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::Polinomi<TBP>::operator/(const bsl::Polinomi<TBP> & pol) const {
+  return divide(pol)[0];
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::Polinomi<TBP>::operator%(const TBP & val) const {
+  return bsl::Polinomi<TBP> (0);
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::Polinomi<TBP>::operator%(const bsl::Polinomi<TBP> & pol) const {
+  return divide(pol)[1];
+}
+
+template <class TBP> bool bsl::Polinomi<TBP>::operator==(const TBP & val) const {
+  return ((grau == 0) and (coef[0] == val));
+}
+
+template <class TBP> bool bsl::Polinomi<TBP>::operator==(const bsl::Polinomi<TBP> & pol) const {
+  if (this == &pol)
+    return true;
+  if (grau != pol.grau)
+    return false;
+  for (int i = 0; i <= grau; i++)
+    if (coef[i] != pol.coef[i])
+      return false;
+  return true;
+}
+
+template <class TBP> bool bsl::Polinomi<TBP>::operator!=(const TBP & val) const {
+  return (!operator==(val));
+}
+
+template <class TBP> bool bsl::Polinomi<TBP>::operator!=(const Polinomi & pol) const {
+  return (!operator==(pol));
+}
+
+template <class TBP> bool bsl::Polinomi<TBP>::operator<(const TBP & val) const {
+  if (grau > 0)
+    return false;
+  return (coef[0] < val);
+}
+
+template <class TBP> bool bsl::Polinomi<TBP>::operator<(const Polinomi & pol) const {
+  return (!operator>=(pol));
+}
+
+template <class TBP> bool bsl::Polinomi<TBP>::operator<=(const TBP & val) const {
+  if (grau > 0)
+    return false;
+  return (coef[0] <= val);
+}
+
+template <class TBP> bool bsl::Polinomi<TBP>::operator<=(const Polinomi & pol) const {
+  if (grau == pol.grau) {
+    for (int i = 0; i <= grau; i++)
+      if (coef[i] > pol.coef[i])
+	return false;
+    return true;
+  }
+  return (grau < pol.grau);
+}
+
+template <class TBP> bool bsl::Polinomi<TBP>::operator>(const TBP & val) const {
+  return (!operator<=(val));
+}
+
+template <class TBP> bool bsl::Polinomi<TBP>::operator>(const Polinomi & pol) const {
+  return (!operator<=(pol));
+}
+
+template <class TBP> bool bsl::Polinomi<TBP>::operator>=(const TBP & val) const {
+  return (!operator<(val));
+}
+
+template <class TBP> bool bsl::Polinomi<TBP>::operator>=(const Polinomi & pol) const {
+  if (grau == pol.grau) {
+    for (int i = 0; i <= grau; i++)
+      if (coef[i] < pol.coef[i])
+	return false;
+    return true;
+  }
+  return (grau > pol.grau);
+}
+
+template <class TBP> const TBP & bsl::Polinomi<TBP>::operator[](int i) const {
+  if ((i > grau) or (i < 0)) {
+    std::cerr << "ERROR: No hi ha coeficient per a l'index " << i << "." << std::endl;
+    exit(-1);
+  }
+  else
+    return coef[i];
+}
+
+template <class TBP> TBP & bsl::Polinomi<TBP>::operator[](int i) {
+  if (i < 0) {
+    std::cerr << "ERROR: Polinomi no accepta potencies negatives." << std::endl;
+    exit(-1);
+  }
+  if (i > grau) {
+    int ant_grau = grau;
+    grau = i;
+    coef = (TBP *) realloc(coef, (grau + 1) * sizeof(TBP));
+    for (int j = ant_grau + 1; j <= grau; j++)
+      coef[j] = TBP(0);
+  }
+  return coef[i];
+}
+
+template <class TBP> TBP bsl::Polinomi<TBP>::operator()(const TBP & x) const {
+  TBP pot = 1, res = coef[0];
+  for(int i = 1; i <= grau; i++) {
+    pot = pot * x;
+    if (coef[i] != TBP(0))
+      res = res + (pot * coef[i]);
+  }
+  return res;
+}
+
+template <class TBP> bsl::Complex<TBP> bsl::Polinomi<TBP>::operator()(const bsl::Complex<TBP> comp) const {
+  Complex <TBP> pot(1,0), res(coef[0], 0);
+  for(int i = 1; i <= grau; i++) {
+    pot = pot * comp;
+    res = res + (pot * coef[i]);
+  }
+  return res;
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::operator+(const TBP & esq, const bsl::Polinomi<TBP> & dre) {
+  return dre.operator+(esq);
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::operator-(const TBP & esq, const bsl::Polinomi<TBP> & dre) {
+  return (-dre + esq);
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::operator*(const TBP & esq, const bsl::Polinomi<TBP> & dre) {
+  return dre.operator*(esq);
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::operator/(const TBP & esq, const bsl::Polinomi<TBP> & dre) {
+  if ((dre.grau == 0) and (dre.coef[0] == 0)) {
+    std::cerr << "ERROR: Divisio entre zero." << std::endl;
+    exit(-1);
+  }
+  return bsl::Polinomi<TBP> (esq - esq);
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::operator%(const TBP & esq, const bsl::Polinomi<TBP> & dre) {
+  if ((dre.grau == 0) and (dre.coef[0] == 0)) {
+    std::cerr << "ERROR: Divisio entre zero." << std::endl;
+    exit(-1);
+  }
+  return bsl::Polinomi<TBP> (esq);
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::operator+(const bsl::Polinomi<TBP> & pol) {
+  return bsl::Polinomi<TBP> (pol);
+}
+
+template <class TBP> bsl::Polinomi<TBP> bsl::operator-(const bsl::Polinomi<TBP> & pol) {
+  bsl::Polinomi<TBP> ret = pol;
+  for (int i = 0; i <= ret.grau; i++)
+    ret.coef[i] = -ret.coef[i];
+  return ret;
+}
+
+template <class TBP> bool bsl::operator==(const TBP & esq, const bsl::Polinomi<TBP> & dre) {
+  return dre.operator==(esq);
+}
+
+template <class TBP> bool bsl::operator!=(const TBP & esq, const bsl::Polinomi<TBP> & dre) {
+  return dre.operator!=(esq);
+}
+
+template <class TBP> bool bsl::operator<(const TBP & esq, const bsl::Polinomi<TBP> & dre) {
+  if (dre.grau > 0)
+    return true;
+  return (esq < dre.coef[0]);
+}
+
+template <class TBP> bool bsl::operator<=(const TBP & esq, const bsl::Polinomi<TBP> & dre) {
+  if (dre.grau > 0)
+    return true;
+  return (esq <= dre.coef[0]);
+}
+
+template <class TBP> bool bsl::operator>(const TBP & esq, const bsl::Polinomi<TBP> & dre) {
+  if (dre.grau > 0)
+    return false;
+  return (esq > dre.coef[0]); 
+}
+
+template <class TBP> bool bsl::operator>=(const TBP & esq, const bsl::Polinomi<TBP> & dre) {
+  if (dre.grau > 0)
+    return false;
+  return (esq >= dre.coef[0]); 
+}
+
+template <class TBP> std::ostream & bsl::operator<<(std::ostream & eix, const bsl::Polinomi<TBP> & pol) {
+  pol.print(eix);
+  return eix;
+}
+
+template <class TBP> std::istream & bsl::operator>>(std::istream & ent, bsl::Polinomi<TBP> & pol) {
+  pol.scan(ent);
+  return ent;
+}
+
+#endif

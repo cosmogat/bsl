@@ -1,0 +1,168 @@
+// -*-c++-*-
+// 29-10-2008
+// billy
+// data
+#ifndef _BSL_DATA_
+#define _BSL_DATA_
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+
+namespace bsl {
+  class Data {
+  private:
+    int dia, mes, any;
+    bool anyCorrecte() const;
+    bool mesCorrecte() const;
+    bool diaCorrecte() const;
+    bool dataCorrecta() const;
+    bool anyBisiesto() const;
+    bool mesIgual(const Data & data) const;
+    void voreData(std::ostream & sor) const;
+    void Llegir(std::istream & ent);
+  public:
+    Data(int d = 1, int m = 1, int a = 0);
+    int day() const;
+    int month() const;
+    int year() const;
+    void change(int d, int m, int a);
+    Data & operator=(const Data & f);
+    bool operator<(const Data & f) const;
+    bool operator<=(const Data & f) const;
+    bool operator>(const Data & f) const;
+    bool operator>=(const Data & f) const;
+    bool operator==(const Data & f) const;
+    bool operator!=(const Data & f) const;
+    friend std::ostream & operator<< (std::ostream & sor, const Data & f);
+    friend std::istream & operator>> (std::istream & ent, Data & data);
+  };
+
+  Data today();
+  std::ostream & operator<< (std::ostream & sor, const Data & f);
+  std::istream & operator>> (std::istream & ent, Data & data);
+}
+
+bool bsl::Data::anyCorrecte() const{
+  return (any >= 0);
+}
+
+bool bsl::Data::mesCorrecte() const{
+   return ((mes >= 1) && (mes <= 12));
+}
+
+bool bsl::Data::diaCorrecte() const{
+  switch (mes) {
+  case 2:
+    if (!anyBisiesto())
+      return (dia <= 28 && dia >= 1);
+    else
+      return (dia <= 29 && dia >= 1);
+    break;
+  case 4: case 6: case 9: case 11:
+    return (dia <= 30 && dia >= 1);
+  default:
+    return (dia <= 31 && dia >= 1);
+  }
+}
+
+bool bsl::Data::dataCorrecta() const{
+  return ((anyCorrecte()) && (mesCorrecte()) && (diaCorrecte()));
+}
+
+bool bsl::Data::anyBisiesto() const{
+  return ((( any % 4 == 0) && (any % 100 != 0)) || (any % 400 == 0));
+}
+
+bool bsl::Data::mesIgual(const bsl::Data & data) const{
+  return (mes == data.mes && any == data.any);
+}
+
+void bsl::Data::voreData(std::ostream & sor) const {
+  //sor << dia << "/" << mes << "/" << any << endl;
+  char buffer [11];
+  sprintf (buffer, "%02d-%02d-%04d", dia, mes, any);
+  sor << buffer;
+}
+
+void bsl::Data::Llegir(std::istream & ent){
+  int d, m, a;
+  char car;
+  ent >> d >> car >> m >> car >> a;
+  change(d, m, a);
+}
+
+bsl::Data::Data(int d, int m, int a) {
+  change(d, m, a);
+}
+
+int bsl::Data::day() const {
+  return dia;
+}
+
+int bsl::Data::month() const {
+  return mes;
+}
+int bsl::Data::year() const {
+  return any;
+}
+
+void bsl::Data::change(int d, int m, int a) {
+  dia = d;
+  mes = m;
+  any = a;
+  if(!dataCorrecta()){
+    //std::clog << "AVIS: Valors incorrectes per a l'objecte 'Data'." << std::endl;
+    std::cerr << "ERROR: Valors incorrectes per a l'objecte 'Data'." << std::endl;
+    exit(-1);
+  }
+}
+
+bsl::Data & bsl::Data::operator=(const bsl::Data & f) {
+  dia = f.dia;
+  mes = f.mes;
+  any = f.any;
+  return (*this);
+}
+
+bool bsl::Data::operator<(const bsl::Data & f) const {
+  return ((any < f.any) || (any == f.any && mes < f.mes) || (any == f.any && mes == f.mes && dia < f.dia));
+}
+
+bool bsl::Data::operator<=(const bsl::Data & f) const {
+  return ((any <= f.any) || (any == f.any && mes <= f.mes) || (any == f.any && mes == f.mes && dia <= f.dia));
+}
+
+bool bsl::Data::operator>(const bsl::Data & f) const {
+  return !operator<=(f);
+}
+
+bool bsl::Data::operator>=(const bsl::Data & f) const {
+  return !operator<(f);
+}
+
+bool bsl::Data::operator==(const bsl::Data & f) const {
+  return (dia == f.dia && mes == f.mes && any == f.any);
+}
+
+bool bsl::Data::operator!=(const bsl::Data & f) const {
+  return !operator==(f);
+}
+
+
+bsl::Data bsl::today() {
+  time_t t = time(0);
+  struct tm * ara = localtime(&t);
+  return bsl::Data (ara->tm_mday, ara->tm_mon + 1, ara->tm_year + 1900);
+}
+
+std::ostream & bsl::operator<<(std::ostream & sor, const bsl::Data & f) {
+  f.voreData(sor);
+  return sor;
+}
+
+std::istream & bsl::operator>>(std::istream &ent, bsl::Data &data) {
+  data.Llegir(ent);
+  return ent;
+}
+
+#endif
